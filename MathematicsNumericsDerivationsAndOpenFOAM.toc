@@ -1,0 +1,7 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Navier-Stokes 特征方程 }{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}从介观Boltzmann方程到宏观Navier-Stokes方程}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}曲线坐标系下的Boltzmann运动方程}{3}{section.1.2}%
+\contentsline {section}{\numberline {1.3}曲线坐标系下的Euler方程推导}{9}{section.1.3}%
+\contentsline {section}{\numberline {1.4}曲线坐标系下的Navier-Stokes方程推导}{10}{section.1.4}%
+\contentsline {chapter}{\numberline {A}推导$\sigma ^{\alpha \beta (1)}$、 $q^{\alpha (1)}$}{13}{appendix.A}%

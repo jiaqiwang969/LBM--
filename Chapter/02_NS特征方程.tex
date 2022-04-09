@@ -1,0 +1,1230 @@
+%==============================================================================
+\documentclass[MathematicsNumericsDerivationsAndOpenFOAM.tex]{subfiles}
+\begin{document}
+%==============================================================================
+
+
+\chapter{Navier-Stokes 特征方程 }
+\label{CHAPTER::Characteristic}
+\pagenumbering{arabic}
+
+%
+%
+%
+\begin{itemize}
+  \item 从介观Boltzmann运动方程推导曲线坐标系下的Euler方程和Navier-Stokes方程；
+\end{itemize}
+
+
+
+\section{从介观Boltzmann方程到宏观Navier-Stokes方程}
+
+
+20世纪50年代初，现代计算机之父冯$\cdot$诺依曼(von.Neuman)为模拟生物发育中细胞的自我复制提出了动力学数值仿真的雏形。随后1970年，剑桥大学的J.H.Conway设计了一种计算机游戏—‘‘生命的游戏” 。它是具有产生动态图案和动态结构能力的元胞自动机模型，吸引了众多科学家的兴趣，推动了动力学研究的迅速发展。之后，S.Wolfram对初等元胞自动机的256种规则产生的所有模型进行了详细而深入的研究。他还用熵来描述其演化行为，把元胞自动机分为：平稳型、周期型、混沌型、复杂型四类。近年来随着复杂性研究的进展，作为探索复杂系统的一种有效工具，元胞自动机获得了深入的研究和广泛的应用。1986年，法国科学计算中心Frisch，Hasslacher和Pomeau1提供了第一个能够恢复Navier-Stokes方程的元胞自动机。 他们表明，当碰撞规则保留质量和动量时，如果下面的晶格具有足够的对称性（至少在二维上是六边形的），则元胞自动机可以在宏观统计中推导得到Navier-Stokes方程。
+
+动力学理论是统计力学的一个重要分支，主要涉及非平衡过程的动力学及其对热力学平衡的松弛。该理论基于物质的分子假设，假设物质不是连续的，而是由大量（但有限）的称为分子的小物体组成。通过考虑组成分子的微观运动来解释气体的宏观特性，例如压力，温度，粘度，热导率等。气体演化的宏观定律可以通过动力学理论的分子描述来预测，并预测热力学的第二定律，这是自然界最基本的定律之一，它表明密闭系统的熵总是增加（熵增定律）。
+
+
+总的来说，动力学问题分为以下三个尺度：
+\begin{itemize}
+  \item  微观尺度：分子尺度。 在此尺度下，分子具有弹道轨迹（布朗运动），其平均微观速度由温度给出。这是分子动力学和光滑分子流体动力学试图在某种程度上复制的尺度。
+
+  \item 介观尺度：分子平均统计量。通过动力学理论研究了分子分布函数的演变。分布函数存在于相空间中，分布函数表示每单位体积的分子数，该单位体积在周围的体积内具有速度、位置和时间。Boltzmann方程的数值化--格子Boltzmann方法（LBM）正是采用这种观点。
+
+  \item  宏观尺度：矢量场（例如流体速度）和标量场（例如压力或温度）变化的尺度。与微观和介观尺度相比，该尺度足够大，可以将流体视为连续体，因此在每个位置和每个时间可定义这些宏观量。例如，速度可以写成$\boldsymbol{u}$ ，压力写成$p$。这些宏观量的行为可以通过Navier-Stokes方程准确地描述。
+\end{itemize}
+
+Boltzmann方程是动力学理论的基石，由奥地利物理学家路德维希$\cdot$爱德华$\cdot$Boltzmann（Ludwig Eduard Boltzmann，1844-1906年）提出。作为联系微观和宏观尺度的桥梁，其最大的成就是在统计力学的发展中，解释并预测了原子的性质及其如何决定物质的宏观性质。该方程用微观动力学相互作用描述了分布函数$f(\boldsymbol{x}, \boldsymbol{\varsigma
+  }, t)$的演化, 其中$\boldsymbol{x}$为笛卡尔坐标系，$\boldsymbol{\varsigma}$表示分子运动速度，$t$为时间参数。 尽管这个方程建立于一个多世纪以前，但直到2011年才获得了关于整体存在和经典解快速衰减到平衡的形式化数学证明。
+
+
+Boltzmann方程可写为：
+
+
+\begin{equation}
+  \boxed{
+    \left(\frac{ \partial  }{ \partial t}+ \boldsymbol{\varsigma} \cdot \frac{\partial}{\partial \boldsymbol{x}} \right) f(\boldsymbol{x}, \boldsymbol{\varsigma}, t) = \Omega  \left( f \right)
+  }
+  \label{EQUATION::Bolzmann笛卡尔} ~
+\end{equation}
+
+
+​其中， $\frac{\partial f}{\partial \boldsymbol{\varsigma}}$ 是分布函数$f$在速度空间$\boldsymbol{\varsigma}$的梯度， $\Omega $ 为碰撞算子。
+
+宏观基本参数密度$\rho$、动量密度$\rho \boldsymbol{u}$、能量密度$\rho E$，以及一般表示形式的张量包括动量通量张量$\Pi_{\alpha \beta}$、分子运动产生的热流通量$Q_{\alpha \beta \gamma}$，可通过对 $f$ 求矩得到：
+
+\begin{equation}
+  \begin{aligned}
+     & \Pi _{0}= \int fd\boldsymbol{\varsigma} = \rho                                                                                                        \\
+     & \Pi_{\alpha}=\int \varsigma_{ \alpha }  fd\boldsymbol{\varsigma} = \rho u_{\alpha}                                                                    \\
+     & \Pi _{ \alpha  \beta } = \int \varsigma_{ \alpha } \varsigma_{ \beta }fd\boldsymbol{\varsigma}                                                        \\
+     & \Pi _{ \alpha  \beta  \gamma}=  \int \varsigma_{ \alpha } \varsigma_{ \beta } \varsigma_{ \gamma}  fd\boldsymbol{\varsigma} = Q_{\alpha \beta \gamma}
+  \end{aligned}
+  \label{EQUATION::定义张量} ~
+\end{equation}
+
+
+
+
+
+
+
+
+碰撞算子根据实际物理条件，有不同的定义方式。但前提是，必须得满足三个守恒定律：
+
+\begin{equation}
+  \begin{aligned}
+    \int  \Omega \left( f \right) d\boldsymbol{\varsigma} =0                        \\
+    \int \boldsymbol{\varsigma}  \Omega \left( f \right) d\boldsymbol{\varsigma} =0 \\
+    \int  \vert \boldsymbol{\varsigma}  \vert ^{2} \Omega \left( f \right) d\boldsymbol{\varsigma} =0 \quad or \quad  \int\vert \boldsymbol{\iota}\vert^2 \Omega \left( f \right) d\boldsymbol{\varsigma} =0
+  \end{aligned}
+  \label{EQUATION::碰撞算子三个守恒} ~
+\end{equation}
+
+
+
+
+其中，因为 $ \int\vert \boldsymbol{\iota}\vert^2 =\vert \boldsymbol{\varsigma} -\boldsymbol{u} \vert^2 = \vert \boldsymbol{\varsigma}  \vert ^{2}-2\boldsymbol{\varsigma} \cdot \boldsymbol{u}+ \vert \boldsymbol{u} \vert ^{2}$ , $\boldsymbol{u}$为宏观流体速度， $\boldsymbol{\iota}$为相对速度 。通过结合质量和动量守恒，可推导得到两个能量守恒的形式等价。
+
+
+关于碰撞算子，最为著名的是1954年Bhatnagar、Gross和Krook共同提出的单弛豫时间的气体碰撞过程的模型，简称BGK模型：
+
+\begin{equation}
+  \boxed{
+  \Omega(f)= -\frac{f-f^{(0)}}{\tau}
+  }
+  \label{EQUATION::BGK模型1} ~
+\end{equation}
+
+平衡分布是由Maxwell-Boltzmann形式给出的：
+
+\begin{equation}
+  \boxed{
+    f^{(0)}(| \boldsymbol{\iota}|) = \rho {(\frac{3}{4\pi e}})^{3/2} \exp({-3| \boldsymbol{\iota}|^2/4e})
+  }
+  \label{EQUATION::平衡分布} ~
+\end{equation}
+
+Maxwell平衡分布的引入使压力$p$、内能$e$、温度$T$热力学物理量得以在统计意义上被描述
+\begin{equation}
+  \Pi _{ \alpha  \alpha }= \frac{1}{2}\int \varsigma_{ \alpha } \varsigma_{ \alpha }fd\boldsymbol{\varsigma} = \frac{1}{2} (\rho u_\alpha u_\alpha + \int \iota_{ \alpha } \iota_{ \alpha }fd\boldsymbol{\varsigma} )  =\rho E
+\end{equation}
+
+其中，$2\rho e= \int \iota_{ \alpha } \iota_{ \alpha }fd\boldsymbol{\varsigma} = 3p =3RT$，$R$ 为摩尔质量常数。该关系与理想气体状态方程一致。
+
+BGK碰撞模型同时引入了弛豫时间$\tau$, 该参数与剪切黏度$\mu$关系如下
+
+\begin{equation}
+  \begin{aligned}
+    \mu=\frac{2}{3} \rho e \tau=p \tau=\rho R T \tau
+  \end{aligned}
+  \label{EQUATION::viscosity} ~
+\end{equation}
+
+
+
+公式（\ref{EQUATION::viscosity} ）表明，剪切黏度$\mu$和分子松弛时间 $\tau$成正比，松弛时间越小， 则分子恢复到平衡态$f^{(0)}$的时间相对越短;反之，越长。此外，d’Humières在1992年引入了多重弛豫时间（MRT）晶格Boltzmann方程，以克服BGK模型的准确性和稳定性方面的缺陷，并证明其优越性。
+
+
+
+
+为了推导Navier-Stokes方程，英国数学家Chapman和Enskog分别于1916和1917年独立提出的多尺度展开法，因此被称为Chapman-Enskog（简称C-E）展开分析。该算法常被用作分析晶格气体的宏观动力学。
+
+\begin{equation}
+  \begin{aligned}
+     & f\left(K_{n}\right)=f^{(0)}+K_{n} f^{(1)}+K_{n}^{2} f^{(2)}+\cdots                                                                                                                                                                \\
+     & \frac{\partial}{\partial t} \rightarrow K_{n} \frac{\partial}{\partial t_{1}}+K_{n}^{2} \frac{\partial}{\partial t_{2}} \quad \frac{\partial}{\partial \boldsymbol{x}} \rightarrow K_{n} \frac{\partial}{\partial \boldsymbol{x}}
+  \end{aligned}
+\end{equation}
+
+其中，努森数 $K_n$ 为平均自由路径和特征长度之间的比率。如果$K_n<<1$，则该气体 可以被看作是一个连续介质。
+
+
+将分布函数$f$、偏导数 、物理量、BGK碰撞算子等都按照努森数的不同阶次$Kn^{(n)}$展开，$\Pi_{\alpha \beta}$、$Q_{\alpha \beta \gamma}$等高阶矩则可由基本状态变量（低阶矩）和它们的时空导数近似得到。根据不同阶次的C-E展开，可分别导出Euler方程、Navier-Stokes方程、Burnett 方程，甚至可描述非平衡态的高阶方程。
+
+\begin{equation}
+  \boxed{
+    \begin{aligned}
+       & f=f^{(0)} \longrightarrow \text { Euler 方程 }                                                              \\
+       & f=f^{(0)}+K_{n}{ }^{1} f^{(1)} \longrightarrow \text { Navier-Stokes 方程 }                                 \\
+       & f=f^{(0)}+K_{n}{ }^{1} f^{(1)}+K_{n}{ }^{2} f^{(2)} \longrightarrow \text { Burnett 方程 }                  \\
+       & f=f^{(0)}+K_{n}{ }^{1} f^{(1)}+K_{n}{ }^{2} f^{(2)}+\mathrm{L} \longrightarrow \text { Super-Burnett 方程 }
+    \end{aligned}
+  }
+  \label{EQUATION::CE EXPANDING} ~
+\end{equation}
+
+
+由关系式（\ref{EQUATION::CE EXPANDING} ）可以看出，Euler方程的推导过程是假设粘性项为零，即松弛时间为零，相当于任何时刻均处于平衡态$f^{(0)}$。而 Navier-Stokes 方程的推导过程中，松弛时间不为零，也就是说分子恢复到平衡态需要一定的时间，宏观上等价于引入了粘性项。线性Euler方程常被用于均匀背景流下的声学传播问题。而对于低马赫数下的高雷诺数湍流问题，通常$Kn << 1$, $\mathcal{O}\left(K n^{2}\right)$ 高阶项可以忽略，一般在不可压的Navier-Stokes 方程的框架下便可开展研究。在高马赫数低雷诺数条件下，努森数$K_n$较大，气体流动为过渡流（$0.1\leq Kn\leq 10$）或者分子流（$Kn\geq10$），需要拓展到Burnett 方程的框架下进行模拟。
+
+
+
+
+%
+%
+%
+%
+\section{曲线坐标系下的Boltzmann运动方程}
+%
+%
+近些年，有一些研究工作开始尝试将晶格气体自动机拓展为模拟任意表面上的流体，这对于数值算法的通用化是非常有意义的。其思想是利用微分几何工具，将曲线坐标系映射到笛卡尔坐标系下求解。在【】参考文献之上，我们整理并完善了从曲线坐标系下的Boltzmann方程到广义Naver-Stokes方程的推导过程，以便更深入理解Euler方程、Naver-Stokes方程背后的流声物理意义，同时也为后续柱坐标系下的旋流管道线性Euler方程的推导以及对任意坐标系下的无反射边界条件的推导起铺垫作用。
+%
+%
+
+我们通常感兴趣的基本思想是任意（弯曲或非弯曲）流形或坐标系上的几何。一个流形，你可以简单地把它想象成一个光滑的“表面”，一切都发生在上面。
+] cv
+
+
+首先，我们引入一些微分几何的概念。逆变（contravariant，也称反变）和协变（covariant，也称共变）描述一个向量（或更广义来说，张量）的坐标，用于描述在向量空间的基底／坐标系变换之下，如何通过雅可比矩阵对其坐标进行相互转换。
+
+对于位置, 我们可以分别在笛卡尔坐标系$\boldsymbol{x}(x,y,z)$和曲线坐标系$\boldsymbol{\xi}(\xi,\eta,\zeta)$下展开。对于笛卡尔坐标系来说，其逆变和协变相等，为方便与曲线坐标系做对比，同样写成逆变和协变两个基向量的展开形式：
+%
+%
+\begin{equation}
+  \begin{aligned}
+    \boldsymbol{x}(x,y,z)=x_{i} \widehat{g}^{i}=x^{i} \widehat{g}_{i} \\
+    \boldsymbol{\xi}(\xi,\eta,\zeta)=\xi_{i} g^{i}=\xi^{i} g_{i}
+  \end{aligned}
+\end{equation}
+
+
+%
+%
+
+相应的，一般物理量例如分子速度可以有不同的表达形式
+%
+%
+\begin{equation}
+  \begin{aligned}
+    \boldsymbol{\varsigma(\boldsymbol{x})}=u^{i} \widehat{g}_{i}=u_{i} \widehat{g}^{i} \\
+    \boldsymbol{\varsigma(\boldsymbol{\xi})}=v^{i}g_{i}=v_{i} g^{i}
+  \end{aligned}
+\end{equation}
+
+坐标变换的Jacobian行列式定义为
+
+\begin{equation}
+  J=\left|\begin{array}{lll}
+    x_{\xi} & x_{\eta} & x_{\zeta} \\
+    y_{\xi} & y_{\eta} & y_{\zeta} \\
+    z_{\xi} & z_{\eta} & z_{\zeta}
+  \end{array}\right|  ,
+  \quad \frac{1}{J}=\left|\begin{array}{lll}
+    \xi_{x}   & \xi_{y}   & \xi_{z}   \\
+    \eta_{x}  & \eta_{y}  & \eta_{z}  \\
+    \zeta_{x} & \zeta_{y} & \zeta_{z}
+  \end{array}\right|
+\end{equation}
+
+
+相应的，$\boldsymbol{x}$和$\boldsymbol{\xi}$的转换有如下关系：
+
+
+\begin{equation}
+  v^{j}=\frac{\partial \xi^{j}}{\partial x_{i}} u_{i}=A_{i}^{j} u_{i}
+\end{equation}
+
+同理，其逆变换有
+\begin{equation}
+  u_{i}=\frac{\partial x_{i}}{\partial \xi^{j}} v^{j}=\bar{A}_{j}^{i} v^{j}
+\end{equation}
+
+
+其中，假设
+
+\begin{equation}
+  A_{i}^{j} \equiv \frac{\partial \xi^{j}}{\partial x_{i}} { , } \quad \text \quad \bar{A}_{j}^{i} \equiv \frac{\partial x_{i}}{\partial \xi^{j}}
+\end{equation}
+
+引入度量张量返回两个基向量的内积，用来衡量度量空间中的距离、面积及角度的二阶张量
+\begin{equation}
+  \widehat{g}_{i j}=\widehat{g}_{i} \cdot \widehat{g}_{j}=A_{i}^{k} A_{j}^{l} g_{k } \cdot  g_{l }
+\end{equation}
+
+
+$g $ 记做共变度量张量的行列式，
+\begin{equation}
+  \widehat{g} \equiv det[\widehat{g}_{i j}]=|A|^{2} g = {1\over J^2} g
+\end{equation}
+
+其中，$J=\sqrt{g / \widehat{g}}$。对于笛卡尔坐标系，$\sqrt{\widehat{g}}=1$，所以$J=\sqrt{g}$。
+此关系表明, Jacobian系数的几何意义为矩阵线性变换的体积比。
+
+
+
+其相对逆变参数$x^j$的偏导数有
+\begin{equation}
+  \frac{\partial \boldsymbol{u}}{\partial x^{j}}=\frac{\partial}{\partial x^{j}}\left(u^{i} \widehat{g}_{i}\right)=\left(\frac{\partial u^{i}}{\partial x^{j}}+\Gamma_{k j}^{i} u^{k}\right) \widehat{g}_{i}\equiv u^{i}|_{i} \widehat{g}_{i}
+\end{equation}
+
+其中，$\Gamma_{k j}^{i} $ 为Christoffel 符号:
+\begin{equation}
+  \Gamma_{k j}^{i}(\boldsymbol{x}) \equiv \frac{\partial \widehat{g}_{k}(\boldsymbol{x})}{\partial x^{j}} \cdot \widehat{g}^{i}(\boldsymbol{x})
+\end{equation}
+
+简而言之，Christoffel 符号代表了 Levi-Civita 连接的连接系数。在几何意义上，它们描述了整个给定坐标系中基向量的变化。在物理上，Christoffel 符号代表由非惯性参考系引起的虚拟力。
+
+%\begin{aligned}
+%\\
+%\Gamma_{k j}^{i}(\boldsymbol{\xi}) \equiv \frac{\partial g_{k}(\boldsymbol{\xi})}{\partial \xi^{j}} \cdot g^{i}(\boldsymbol{\xi})
+%\end{aligned}
+
+对于算子符号$\nabla$来说，同样需要在基向量下表达：
+\begin{equation}
+  \nabla\equiv\widehat{g}^{j} \frac{\partial}{\partial x^{j}}
+\end{equation}
+%\equivg^{j} \frac{\partial}{\partial \xi^{j}}
+
+因此，向量的散度最终可以写成如下形式
+\begin{equation}
+  \nabla \cdot \boldsymbol{u}=\left(\widehat{g}^{j} \frac{\partial}{\partial x^{j}}\right) \cdot\left(u^{i} \widehat{g}_{i}\right)=\widehat{g}^{j} \cdot\left(u^{i}|_{j} \widehat{g}_{i}\right)=u^{i}|_{j} \delta_{i}^{j}=u^{i}|_{i}
+\end{equation}
+
+其中，
+\begin{equation}
+  u^{i}|_{i}=\frac{\partial u^{i}}{\partial x^{i}}+\Gamma_{k i}^{i} u^{k}=\frac{\partial u^{i}}{\partial x^{i}}+\frac{1}{\sqrt{\widehat{g}}} \frac{\partial \sqrt{\widehat{g}}}{\partial x^{i}} u^{i}
+\end{equation}
+
+
+
+
+
+
+
+为了推导曲线坐标系的Bolzmann方程，首先我们利用广义坐标系下的物质导数关系式
+%\begin{equation}
+%{D\over Dt} = \frac{\partial}{\partial t}+{d\boldsymbol{x} \over dt} \cdot \frac{\partial}{\partial \boldsymbol{x}} +  {d \boldsymbol{\varsigma} \over dt} \cdot \frac{\partial}{\partial \boldsymbol{\varsigma}}
+%\end{equation}
+
+\begin{equation}
+  \begin{aligned}
+    \frac{\mathrm{D}}{\mathrm{D} t}=\frac{\partial}{\partial t}+\left(v^{i} \widehat{\boldsymbol{g}}_{i}\right) \cdot\left(\widehat{\boldsymbol{g}}^{j} \frac{\partial}{\partial \xi^{j}}\right)+\left(\dot{v}^{i} \widehat{\boldsymbol{g}}_{i}\right) \cdot\left(\widehat{\boldsymbol{g}}^{j} \frac{\partial}{\partial v^{j}}\right) \\
+    =\frac{\partial}{\partial t}+v^{i} \frac{\partial}{\partial \xi^{i}} + \dot{v}^{i} \frac{\partial}{\partial  v^{i}}
+  \end{aligned}
+  \label{EQUATION::广义物质导数} ~
+\end{equation}
+
+
+由于体积中的粒子数是一个标量，转换到曲线坐标系下，$f$不发生改变，即使是在粒子密度不变的情况下。为了满足Bolzmann方程在曲线坐标系下的不变性，需要将其乘以Jacobian系数$J$。
+
+重新对(\ref{EQUATION::Bolzmann笛卡尔})的拉格朗日形式${D Jf(\boldsymbol{\xi}, \boldsymbol{\varsigma}, t) \over Dt} =\Omega(f)$进行展开
+
+\begin{equation}
+  \frac{\partial Jf}{\partial t}+v^{j} \frac{\partial Jf}{\partial \xi^{j}} + \dot{v}^{i} \frac{\partial Jf}{\partial  v^{i}} =\Omega(Jf)
+  \label{EQUATION::Bolzmann中间过程2} ~
+\end{equation}
+
+%
+%
+根据牛顿第一定律，在没有外力的情况下，分子具有恒定的速度，并在笛卡尔坐标系（三维）中沿直线运动。但在曲线坐标系下，则为沿流形面运动，有如下关系：
+
+%如果有外力，可以把外力加上。这个外力特指body force density
+%
+%
+\begin{equation}
+  \dot{\boldsymbol{\varsigma}}=0 \rightarrow \dot{v}^{i} \widehat{\boldsymbol{g}}_{i}+v^{i} \frac{\partial g_{i}}{\partial \xi^{j}} v^{j}=0
+  \label{EQUATION::A.3} ~
+\end{equation}
+%
+
+其中，$v^{j}=\dot{\xi}^{j}$。
+%
+%
+
+由于，
+
+\begin{equation}
+  \frac{\partial \boldsymbol{g}_{i}}{\partial \xi^{j}}=\frac{\partial g_{i}}{\partial \xi^{j}} \cdot g^{k} g_{k} \equiv \Gamma_{i j}^{k} g_{k}
+  \label{EQUATION::A.4} ~
+\end{equation}
+%
+%
+
+通过重新排列哑标，我们可以得到
+\begin{equation}
+  \dot{\boldsymbol{\varsigma}}=0 \rightarrow \dot{v}^{i} g_{i}+v^{j} v^{k} \Gamma_{j k}^{i} g_{i}=0
+  \label{EQUATION::A.5} ~
+\end{equation}
+%
+%
+
+在广义坐标空间中还存在一个“离心加速度”（惯性力），即
+%
+%
+\begin{equation}
+  \dot{v}^{i}=- \Gamma_{j k}^{i}v^{j} v^{k}
+  \label{EQUATION::A.6} ~
+\end{equation}
+%
+
+将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2})可以得到曲线坐标系下的Bolzmann方程：
+
+\begin{equation}
+  \boxed{
+  \frac{\partial Jf}{\partial t}+v^{i} \frac{\partial Jf}{\partial \xi^{i}}  - \Gamma_{j k}^{i} v^{j} v^{k}  \frac{\partial Jf}{\partial  v^{i}}  =\Omega
+  }
+  \label{EQUATION::Bolzamman 曲线} ~
+\end{equation}
+
+
+
+
+
+
+
+定义粒子密度函数为
+\begin{equation}
+  J(\boldsymbol{\xi}) f(\boldsymbol{\xi}, \bar{\varsigma}, t) \equiv N(\boldsymbol{\xi}, \bar{\varsigma}, t)
+\end{equation}
+
+记
+\begin{equation}
+  \int d \bar{\varsigma} \equiv \int d v^{1} d v^{2} d v^{3}
+\end{equation}
+
+
+
+那么我们就有以下规定的矩
+%
+%
+\begin{equation}
+  \begin{aligned}
+    \int d \bar{\varsigma} N(\boldsymbol{\xi}, \bar{\varsigma}, t)       & =J(\boldsymbol{\xi}) \int d \bar{\varsigma} f(\boldsymbol{\xi}, \bar{\varsigma}, t)=J(\boldsymbol{\xi}) \rho(\boldsymbol{\xi}, t)                                  \\
+    \int d \bar{\varsigma} v^{i} N(\boldsymbol{\xi}, \bar{\varsigma}, t) & =J(\boldsymbol{\xi}) \int d \bar{\varsigma} v^{i} f(\boldsymbol{\xi}, \bar{\varsigma}, t)=J(\boldsymbol{\xi}) \rho(\boldsymbol{\xi}, t) u^{i}(\boldsymbol{\xi}, t)
+  \end{aligned}
+  \label{EQUATION::A.11} ~
+\end{equation}
+%
+%
+
+碰撞算子的矩,类似笛卡尔坐标系下公式（\ref{EQUATION::碰撞算子三个守恒}）分别满足质量守恒、动量守恒和能量守恒：
+\begin{equation}
+  \begin{aligned}
+    \int d \bar{\varsigma} \Omega(\xi, \bar{\varsigma}, t)=0,      \\
+    \int d \bar{\varsigma} v^{i} \Omega(\xi, \bar{\varsigma}, t)=0 \\
+    \int d \bar{\varsigma} |v^i|^2 \Omega(\xi, \bar{\varsigma}, t)=0 \quad or \quad \int d \bar{\varsigma} |v^i-u^i|^2 \Omega(\xi, \bar{\varsigma}, t)=0
+  \end{aligned}
+  \label{EQUATION::碰撞特性} ~
+\end{equation}
+%
+
+我们给出曲线坐标系下的满足以上条件的一种形式，同(\ref{EQUATION::BGK模型1})给出曲线坐标系下的BGK碰撞模型：
+
+\begin{equation}
+  \boxed{
+  \Omega(f)= -\frac{Jf-Jf^{(0)}}{\tau}
+  }
+\end{equation}
+
+
+平衡分布类比(\ref{EQUATION::平衡分布})以Maxwell-Boltzmann形式给出的：
+%
+%
+
+\begin{equation}
+  \boxed{
+    f^{(0)}(| \boldsymbol{\iota}|) = \rho J {(\frac{3}{4\pi e}})^{3/2}\exp({-\frac{3 {\iota^i\iota^jg_{ij}}}{4e}})
+  }
+  \label{EQUATION::平衡分布2} ~
+\end{equation}
+
+
+使用高斯积分的可以得到平衡分布的一些基本属性：
+%
+%
+\begin{equation}
+  \begin{aligned}
+     & \int  f^{(0)} d\bar{\varsigma}=\rho                                                                                                                        \\
+     & \int  \iota^{k} \iota^{l} f^{(0)}d\bar{\varsigma} = \frac{2}{3}\rho e g^{k l}  =pg^{k l}                                                                   \\
+     & \int  \iota^{k} \iota^{k} \iota^{l} f^{(0)}d\bar{\varsigma}  = 0                                                                                           \\
+     & \int  \iota^{k} \iota^{l}  \iota^{m} \iota^{n} f^{(0)}d\bar{\varsigma}  =     \frac{4}{9}\rho e^2 (g^{kl}g^{mn}+g^{km}g^{ln}+g^{kn}g^{lm})                 \\
+     & \int  \iota^{k} \iota^{l}  \iota^{m} \iota^{n} \iota^{i} \iota^{j} f^{(0)}d\bar{\varsigma}  =                                                              \\
+     & \quad\quad  \frac{8}{27}\rho e^3 ( g^{k l} g^{m n} g^{i j}+g^{k l} g^{m i} g^{n j}+g^{k l} g^{m j} g^{n i}+g^{k m} g^{l n} g^{i j}+g^{k m} g^{l i} g^{n j} \\
+     & \quad\quad\quad\quad +g^{k m} g^{l j} g^{n i}+g^{k n} g^{l m} g^{i j}+g^{k n} g^{l i} g^{m j}+g^{k n} g^{l j} g^{m i}+g^{k i} g^{l m} g^{n j}              \\
+     & \quad\quad\quad\quad +g^{k i} g^{l n} g^{m j}+g^{k i} g^{l j} g^{m n}+g^{k j} g^{l m} g^{n i}+g^{k j} g^{l n} g^{m i}+g^{k j} g^{l i} g^{m n})             \\
+     & \int \iota^{k_{1}} \iota^{k_{2}} \ldots \iota^{k_{n}}  f^{(0)}d \bar{\varsigma}  =0, \quad n=\text { odd }
+  \end{aligned}
+  \label{EQUATION::A.19} ~
+\end{equation}
+%
+%
+
+相应的，我们可以得到关系式：
+\begin{equation}
+  \begin{aligned}
+     & \rho=\int f^{(0)} d \bar{\varsigma}, \quad \rho u^{i}=\int  v^{i} f^{(0) d \bar{\varsigma}}                                                       \\
+     & \Pi^{i j (0)}=\int  v^{i} v^{j} f^{(0)}d \bar{\varsigma}= \frac{2}{3}\rho e g^{i j}+\rho u^{i} u^{j}                                              \\
+     & \Pi^{i j k (0)}=\int  v^{i} v^{j} v^{k}  f^{(0)} d \bar{\varsigma}= \frac{2}{3}\rho e (u^i g^{jk}+u^j g^{ik} + u^k g^{ij})+\rho u^{i} u^{j} u^{k} \\
+  \end{aligned}
+  \label{EQUATION::A.20} ~
+\end{equation}
+%
+
+
+%
+
+将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个守恒方程。由于分子速度$v^j$与位置参数$\xi$无关，满足$v^i \frac{\partial}{\partial \xi^i}(N)=\frac{\partial}{\partial \xi^i}(v^i N)$。由于$\frac{\partial (v^j v^k \Gamma_{jk}^i)}{\partial v^i}=\frac{\partial(-\dot{v}^i)}{\partial v^i}=0$, 利用分步积分，可以将$v^j v^k \Gamma_{jk}^i$移到偏微分里面，整理得到
+
+%其中，$\frac{1}{2}|\boldsymbol{\varsigma}|^2=\frac{1}{2}g_{jk}v^{j}v^{k}$，
+%
+%
+\begin{equation}
+  \begin{aligned}
+     & \int  \left\{\partial_{t} N+\frac{\partial}{\partial \xi^{i}}\left(v^{i} N\right)-\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)\right\}d\bar{\varsigma}=0                                                                     \\
+     & \int \left\{\partial_{t}  v^{j} N+\frac{\partial}{\partial \xi^{i}}\left( v^{j} v^{i} N\right)-v^{j}\frac{\partial}{\partial v^{l}}\left(  v^{m} v^{n} \Gamma_{mn}^{l} N\right)\right\}d \bar{\varsigma}=0                                                  \\
+     & \frac{1}{2}\int \left\{\partial_{t} g_{jk} v^{j}v^{k} N+ \frac{\partial}{\partial \xi^{i}}\left( g_{jk}v^{j} v^{k} v^{i} N\right)- g_{jk} v^{j}v^{k}  \frac{\partial}{\partial v^{i}}\left( v^{m} v^{n} \Gamma_{mn}^{i} N\right)\right\}d \bar{\varsigma}=0 \\
+  \end{aligned}
+  \label{EQUATION::A.12} ~
+\end{equation}
+%
+%
+
+接下来，对三个守恒公式通过积分得到宏观形式的质量连续性方程、动量输运方程和能量输运方程:
+
+
+对于等式（\ref{EQUATION::A.12}）第一项，通过分步积分，推导得到$\int\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)d \bar{\varsigma}=0$，并使用定义（\ref{EQUATION::A.11}），我们得到质量连续性方程如下
+%
+%
+\begin{equation}
+  \partial_{t}(J \rho)+\frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i}\right)=0
+  \label{EQUATION::A.13} ~
+\end{equation}
+%
+%
+
+这里，假定坐标系不随时间发生改变, 即$\partial_{t}(J)=0$。因此可以改写成更常见的形式：
+%
+%
+\begin{equation}
+  \boxed{
+    \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i}\right)=0
+  }
+  \label{EQUATION::A.14} ~
+\end{equation}
+%
+%
+
+%
+%
+
+对于等式（\ref{EQUATION::A.12}）第二项，通过分步积分，并利用关系$\frac{\partial v^{j}}{\partial v^{l}}=\delta_{l}^{j}$，推导得到$\int v^{j}\frac{\partial}{\partial v^{l}}\left(v^{m} v^{n} \Gamma_{mn}^{l} N\right)d\bar{\varsigma}=-\int v^{m} v^{n} \Gamma_{mn}^{j} N d\bar{\varsigma}$, $J$、$\Gamma_{mn}^j$与分子速度$v^i$无关，整理得到动量输运方程, 也称Cauchy输运方程：
+%
+%
+\begin{equation}
+  \boxed{
+    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \Pi^{i j}\right)+\Gamma_{m n}^{j} \Pi^{m n}=0
+  }
+  \label{EQUATION::A.15} ~
+\end{equation}
+%
+%
+
+其中，类似(\ref{EQUATION::定义张量})，动量通量张量定义为$\Pi^{ij} \equiv \int  v^{i} v^{j} f(\boldsymbol{\xi}, \bar{\varsigma}, t)d \bar{\varsigma}$。
+
+将动量通量张量展开,其中相对速度的矩为0，整理得到
+\begin{equation}
+  \begin{aligned}
+    \Pi^{i j}=\int   \left(u^{i} u^{j}+u^{i} \iota^{j}+\iota^{i} u^{j}+\iota^{i} \iota^{j}\right) f  d \bar{\varsigma} \\
+    =\rho u^{i} u^{j}+\int \iota^{i} \iota^{j} f  d \bar{\varsigma} = \rho u^{i} u^{j}+ \sigma^{i j}
+  \end{aligned}
+  \label{EQUATION::动量通量推导} ~
+\end{equation}
+
+将动量通量张量代入（\ref{EQUATION::A.15}）可以得到:
+
+\begin{equation}
+  \boxed{
+    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
+  }
+  \label{动量方程输运形式} ~
+\end{equation}
+%
+
+
+
+其中，左式第二、三项与动量的对流有关，右式的$\sigma^{i j}$被称作Cauchy应力对称张量，$\sigma^{i j}=\int \iota^{i} \iota^{j} f  d \bar{\varsigma}$。Cauchy应力张量取决于分布函数$f$，因此，后续仍需要通过C-E展开近似$f$，推导Cauchy应力张量$\sigma^{i j}$的宏观表达式，才能得出完整宏观的动量守恒方程。
+%
+%
+
+对于等式（\ref{EQUATION::A.12}）第三项，将其转化为能量密度的守恒形式, 能量密度定义为$\rho E= \frac{1}{2}\int g_{jk} v^{j}v^{k} f d\bar{\varsigma} =\rho (\frac{1}{2}|\boldsymbol{\varsigma}|^2+e)$，内能 $e=\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k} f  d \bar{\varsigma}$, 热通量向量$Q^i=\frac{1}{2}\int g_{jk}v^{j} v^{k} v^{i} fd \bar{\varsigma}$。
+
+首先，通过分步积分，推导得到$\int g_{jk} v^{j}v^{k}  \frac{\partial}{\partial v^{i}}\left( v^{m} v^{n} \Gamma_{mn}^{i} N\right)d \bar{\varsigma}=-2J\int v_i v^mv^n \Gamma_{mn}^i f d \bar{\varsigma}$,代入积分关系式(\ref{EQUATION::A.12}）第三项，整理得到能量输运方程：
+
+\begin{equation}
+  \boxed{
+  \partial_{t}\left(\rho E\right)  + \frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J Q^i \right) + \Gamma^i_{ j k}g_{ii}\Pi_{ij k}=0
+  }
+  \label{能量输运1} ~
+\end{equation}
+%
+
+其中，类似(\ref{EQUATION::定义张量})，热流通量张量定义为$\Pi_{i j k}= \int  v^{i} v^{j} v^{k} f(\boldsymbol{\xi}, \bar{\varsigma}, t) d \bar{\varsigma}$。
+
+
+
+将$\Pi^{i j k}$、$Q^i$展开整理得到
+
+
+
+\begin{equation}
+  \begin{aligned}
+    \Pi^{i j k}= \int ( u^j + \iota^j )(u^k + \iota^k)( u^i+\iota^i) f d \bar{\varsigma} =                                                     \\  \rho  u^j u^k u^i  +  u^i\int \iota^{j} \iota^{k} f  d \bar{\varsigma} +   u^k \int  \iota^{j} \iota^{i} f d \bar{\varsigma}  +  u^j  \int   \iota^{k} \iota^{i} f d \bar{\varsigma} + \int \iota^{j} \iota^{k}  \iota^{i} f  d \bar{\varsigma} \\
+    = \rho  u^j u^k u^i  + (u^i \sigma^{kj}+u^k \sigma^{ij}+u^j \sigma^{ki}) + \int \iota^{j} \iota^{k}  \iota^{i} f  d \bar{\varsigma}
+    \\
+    Q^i=\frac{1}{2} g_{jk}\Pi^{i j k}
+    = \underbrace{\frac{1}{2} \rho g_{jk} u^j u^k u^i  + \frac{1}{2} u^i\int g_{jk} \iota^{j} \iota^{k} f  d \bar{\varsigma}}_{\rho  E u^i } + \\
+    +  \underbrace{\frac{1}{2} u^k g_{jk}  \int   \iota^{j} \iota^{i} f d \bar{\varsigma}  + \frac{1}{2} u^j g_{jk}  \int   \iota^{k} \iota^{i} f d \bar{\varsigma} }_{ u_j \sigma^{ij}} +  \underbrace{\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f  d \bar{\varsigma}}_{q^i}
+  \end{aligned}
+\end{equation}
+
+
+其中，$Q^i$的第一项$\rho  E u^i$与能量的对流（advection）有关，第二项$u_j \sigma^{ij}$与Cauchy应力做功有关，第三项为热流项$q^i$，与能量的扩散（diffusion）有关。
+
+代入（\ref{能量输运1}）可以得到:
+
+
+%
+
+\begin{equation}
+  \begin{gathered}
+    \partial_{t}\left(\rho E\right) + \frac{1}{J}\frac{\partial J \rho u^i E}{\partial  \xi^{i}}+\Gamma^i_{j k}g_{ii}\rho u^{i} u^{j} u^{k}  = - \frac{1}{J} \frac{\partial}{\partial \xi^{i  }}\left( J u_j \sigma^{ij} + J q^i \right)\\
+    - \Gamma^i_{j k}g_{ii}(u^i \sigma^{kj}+u^k \sigma^{ij}+u^j \sigma^{ki} + 2g^{jk}q^i)
+  \end{gathered}
+\end{equation}
+
+
+
+%
+
+结合动量方程和连续性方程，整理有：
+
+%这中间严格转换，可能需要将质量守恒也要考虑进来。
+
+\begin{equation}
+  \begin{gathered}
+    \boxed{
+    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  \xi^{i}}  = -\sigma^{ij}  \frac{\partial  u_j}{\partial \xi^{i}}  - \frac{1}{J}\frac{\partial}{\partial \xi^{i}} (J q^{i})  - \Gamma^i_{j k}g_{ii}(u^k \sigma^{ij}+u^j \sigma^{ki}+ 2g^{jk}q^i)
+    }
+  \end{gathered}
+  \label{动量方程输运形式4} ~
+\end{equation}
+
+
+
+
+
+
+\section{曲线坐标系下的Euler方程推导}
+
+
+
+
+前面由关系式（\ref{EQUATION::CE EXPANDING}）已经给出了从Bolzmann方程到Eluer方程的推导思路，即分布函数$f$用平衡态$f^{(0)}$来近似, 得到Cauchy应力张量的平衡态的宏观表达式
+
+\begin{equation}
+  \sigma^{ij(0)} =\int \iota^{i} \iota^{j} f^{(0)}  d \bar{\varsigma}= g^{ij} p
+  \label{EQUATION::Cauchy应力张量1} ~
+\end{equation}
+
+
+\begin{equation}
+  q^{i (0)} =\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f^{(0)}  d \bar{\varsigma}= 0
+  \label{EQUATION::heat flux} ~
+\end{equation}
+
+
+
+
+
+%\begin{equation}
+%  \partial_{t_{0}} N^{(0)}+\frac{\partial}{\partial \xi^{i}}\left(v^{i} N^{(0)}\right)-\frac{\partial}{\partial v^{i}}\left(v^{j} v^{k} \Gamma_{j k}^{i} N^{(0)}\right)=-\frac{1}{\tau} N^{(1)}
+%  \label{EQUATION::B.1} ~
+%\end{equation}
+%
+%
+
+
+
+
+%已知$N^{(0)}$的积分性质，通过简单的代数可以很容易地证明，$N^{(1)}$(和$f^{(1)}$)给出的质量和动量矩都为零，即
+%
+%
+%$$
+%  \int d \bar{\varsigma} N^{(1)}(\boldsymbol{\xi}, \bar{\varsigma}, t)=0, \quad \int d \bar{\varsigma} v^{i} N^{(1)}(\boldsymbol{\xi}, \bar{\varsigma}, t)=0
+%$$
+%
+%
+
+%因此，在Euler阶次的展开下，动量通量张量只包括平衡项的贡献，动量输运方程（\ref{EQUATION::A.15}）退化为
+%\begin{equation}
+%  \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{j}}\left(J \Pi^{i j (0)}\right)+\Gamma_{j k}^{i} \Pi^{j k (0)}=0
+%  \label{EQUATION::A.21} ~
+%\end{equation}
+%
+%
+
+%更显式地表达为，
+%\begin{equation}
+%  \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{j}}\left(J\left[g^{i j} p +\rho u^{i} u^{j}\right]\right)+\Gamma_{j k}^{i}\left[g^{j k} p +\rho u^{j} u^{k}\right]=0
+%  \label{EQUATION::A.22} ~
+%\end{equation}
+%
+%
+
+且由于上述描述的欧几里得空间是平坦的 （Ricci曲率张量为0），度量张量满足以下性质
+\begin{equation}
+  \frac{1}{J} \frac{\partial}{\partial \xi^{j}}\left(J g^{i j}\right)+\Gamma_{j k}^{i} g^{j k}=0
+  \label{EQUATION::A.23} ~
+\end{equation}
+%
+%
+
+将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})
+，我们得到曲线坐标系下的Euler方程：
+
+
+
+\begin{equation}
+  \boxed{
+    \begin{aligned}
+       & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i}\right)=0
+      \\
+       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial \xi^{j}}   \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  \xi^{i}}  = -  p (\frac{\partial  u^i}{\partial \xi^{i}}  + \frac{1}{J} \frac{\partial J}{\partial \xi^i}u^i) \\
+    \end{aligned}
+  }
+  \label{EQUATION::Eluer} ~
+\end{equation}
+%这里的\Gamma经过一些转换。参考Taira-A50
+%
+%
+非守恒的形式可以写为:
+\begin{equation}
+  \begin{aligned}
+     & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial \xi^i}=-\rho \frac{\partial u^i}{\partial \xi^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial \xi^i}
+    \\
+     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial \xi^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial \xi^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial \xi^j} - \frac{2e}{3}\frac{\partial \rho}{\partial \xi^j}) \\
+     & \partial_{t}e + u^i\frac{\partial e}{\partial  \xi^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial \xi^{i}}  + \frac{1}{J} \frac{\partial J}{\partial \xi^i}u^i)                                                                                                        \\
+  \end{aligned}
+  \label{EQUATION::Eluer非守恒} ~
+\end{equation}
+
+
+这与无坐标的形式Euler方程相统一：
+
+
+%参考https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)
+\begin{equation}
+  \begin{aligned}
+     & \partial_t \rho + \nabla \cdot (\rho \boldsymbol{u})=0                                                      \\
+     & \partial_{t}\left(\rho \boldsymbol{u} \right)+ \nabla \cdot (\rho \boldsymbol{u} \boldsymbol{u}) =-\nabla p \\
+     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})=-p \nabla \cdot \boldsymbol{u}      \\
+  \end{aligned}
+  \label{EQUATION::Eluer2} ~
+\end{equation}
+%
+%
+%
+%
+%
+%
+\section{曲线坐标系下的Navier-Stokes方程推导}
+%
+%
+
+类似的，由前面由关系式（\ref{EQUATION::CE EXPANDING}）已经给出了从Bolzmann方程到Navier-Stokes方程的推导思路，因此需要获得$f^{(1)}$一阶项的矩积分表达式，包括$\sigma^{\alpha\beta(1)}$、 $q^{\alpha (1)}$,为了不影响整体，将具体推导过程放在附录A。
+
+推导结果总结为：
+\begin{equation}
+  \begin{gathered}
+    \sigma^{ij(1)}=  - 2 \mu \mathcal{S}^{ij}
+  \end{gathered}
+\end{equation}
+
+
+
+\begin{equation}
+  \begin{gathered}
+    q^{\alpha (1)}
+    = -\frac{1}{J}\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial \xi^i}
+  \end{gathered}
+\end{equation}
+
+
+\begin{equation}
+  \begin{gathered}
+    \mathcal{S}^{ij}=\frac{1}{2} (g^{jk} u^i|_k+g^{ik} u^j|_k) -\frac{g^{ij}}{3}u^l|_l
+  \end{gathered}
+\end{equation}
+
+
+
+
+\begin{equation}
+  \boxed{
+    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
+  }
+  \label{动量方程输运形式} ~
+\end{equation}
+%
+
+\begin{equation}
+  \begin{gathered}
+    \boxed{
+    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  \xi^{i}}  = -\sigma^{ij}  \frac{\partial  u_j}{\partial \xi^{i}}  - \frac{1}{J}\frac{\partial}{\partial \xi^{i}} (J q^{i})  - \Gamma^i_{j k}g_{ii}(u^k \sigma^{ij}+u^j \sigma^{ki}+ 2g^{jk}q^i)
+    }
+  \end{gathered}
+  \label{动量方程输运形式4} ~
+\end{equation}
+
+将$\sigma\simeq \sigma^{(0)}+\sigma^{(1)}$和$q\simeq q^{(0)}+q^{(1)}$代入(\ref{动量方程输运形式})、（\ref{动量方程输运形式4}），整理得到：
+
+
+\begin{equation}
+  \boxed{
+    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
+  }
+  \label{动量方程输运形式} ~
+\end{equation}
+%
+
+\begin{equation}
+  \boxed{
+    \begin{aligned}
+       & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial \xi^{i}}\left(J \rho u^{i}\right)=0
+      \\
+       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial \xi^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial \xi^{j}}  \\
+       &\quad\quad\quad\quad + \frac{1}{J} \frac{\partial}{\partial \xi^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn} \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  \xi^{i}}  = -  p (\frac{\partial  u^i}{\partial \xi^{i}}  + \frac{1}{J} \frac{\partial J}{\partial \xi^i}u^i) \\
+    \end{aligned}
+  }
+  \label{EQUATION::Eluer} ~
+\end{equation}
+
+
+
+
+
+\appendix
+\chapter{推导$\sigma^{\alpha\beta(1)}$、 $q^{\alpha (1)}$}
+以下该部分最终目的是为了得到$\sigma^{\alpha\beta(1)}$、 $q^{\alpha (1)}$。
+
+
+根据C-E（\ref{EQUATION::CE EXPANDING}）展开Bolzmann方程。
+
+%
+%
+$$
+  \partial_{t}=\epsilon \partial_{t_{0}}+\epsilon^{2} \partial_{t_{1}} ; \quad \frac{\partial}{\partial \xi^{i}}=\epsilon \frac{\partial}{\partial \xi^{i}} ; \quad \frac{\partial}{\partial v^{i}}=\epsilon \frac{\partial}{\partial v^{i}}
+$$
+
+以及
+
+$$
+  N=N^{(0)}+\epsilon N^{(1)}+\epsilon^{2} N^{(2)}+\cdots
+$$
+%
+
+展开得到$\mathcal{O}\left(K n^{0}\right)$为
+\begin{equation}
+  f^{(1)}=-\tau\left[\partial_{t_{0}} f^{(0)}+v^{i} \frac{\partial}{\partial \xi^{i}}\left(f^{(0)}\right) + v^if^{(0)} \frac{1}{J} \frac{\partial J}{\partial \xi^i} -v^{j} v^{k}\Gamma_{j k}^{i}\frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right]
+  \label{EQUATION::B.4} ~
+\end{equation}
+%
+
+% 展开得到$\mathcal{O}\left(K n^{1}\right)$为
+% %
+% %
+% \begin{equation}
+%   f^{(2)}=-\tau\left[\partial_{t_{1}} f^{(0)}+\partial_{t_{0}} f^{(1)}+\frac{\partial}{\partial \xi^{i}}\left(v^{i} f^{(1)}\right)-v^{j} v^{k}  \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left( f^{(1)}\right)\right]
+%   \label{EQUATION::B.2} ~
+% \end{equation}
+% %
+
+
+平衡分布同(\ref{EQUATION::平衡分布})以Maxwell-Boltzmann形式给出的：
+%
+%
+
+\begin{equation}
+  \boxed{
+    f^{(0)}(| \boldsymbol{\iota}|) = \rho J {(\frac{3}{4\pi e}})^{3/2}\exp({-\frac{3 {\iota^i\iota^jg_{ij}}}{4e}})
+  }
+  \label{EQUATION::平衡分布2} ~
+\end{equation}
+
+将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2})可以得到曲线坐标系下的Bolzmann方程：
+
+\begin{equation}
+  \boxed{
+  \frac{\partial Jf}{\partial t}+v^{i} \frac{\partial Jf}{\partial \xi^{i}}  - \Gamma_{j k}^{i} v^{j} v^{k}  \frac{\partial Jf}{\partial  v^{i}}  =\Omega
+  }
+  \label{EQUATION::Bolzamman 曲线} ~
+\end{equation}
+
+
+
+
+首先，我们先来探索一下$f^{(1)}$与$f^{(0)}$在宏观参数上的关系：
+
+将（\ref{EQUATION::B.4}）除以$f^{(0)}$,
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{f^{(1)}}{f^{(0)}}=-\frac{\tau}{f^{(0)}}\left[\partial_{t_{0}} f^{(0)}+v^{i}\frac{\partial}{\partial \xi^{i}}\left( f^{(0)}\right)+v^i f^{(0)}\frac{1}{J} \frac{\partial J}{\partial \xi^i}-v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right] \\
+    = -\tau \left[\partial_{t_{0}} ln f^{(0)}+v^{i}\frac{\partial}{\partial \xi^{i}}\left( ln f^{(0)}\right)+v^i \frac{1}{J} \frac{\partial J}{\partial \xi^i} -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  ln f^{(0)}\right)\right]
+  \end{gathered}
+  \label{EQUATION::Kn的关系} ~
+\end{equation}
+
+
+因此，我们需要找到$ln f^{(0)}$的宏观表达式，由(\ref{EQUATION::平衡分布2}）以及$f^{(0)}=f^{(0)}(\rho(\boldsymbol{\xi},t),\boldsymbol{u}(\boldsymbol{\xi},t),e(\boldsymbol{\xi},t),\boldsymbol{\xi})$可知：
+
+
+\begin{equation}
+  ln f^{(0)} = \frac{3}{2} ln(\frac{3}{4\pi}) + ln \rho - \frac{3}{2} ln e - (\frac{3}{4e}){\iota^i\iota^jg_{ij}}+ln J
+\end{equation}
+
+
+推导(\ref{EQUATION::Kn的关系})的各项：
+
+与速度相关的第三项：
+
+\begin{equation}
+  \begin{gathered}
+    \frac{\partial ln f^{(0)}}{\partial v^i} =
+    -\frac{3}{4e} \frac{\partial}{\partial v^i}(v^iv^j+u^iu^j-v^iu^j-u^iv^j)g_{ij}=-\frac{3}{2e}\iota^j g_{ij}
+  \end{gathered}
+\end{equation}
+%\partial uu\over \partial v =0
+
+与时间相关的第一项：
+
+\begin{equation}
+  \begin{gathered}
+    \frac{\partial ln f^{(0)}}{\partial t} =
+    \frac{\partial ln f^{(0)}}{\partial \rho} \frac{\partial \rho}{\partial t} +     \frac{\partial ln f^{(0)}}{\partial u^j} \frac{\partial u^j}{\partial t} +     \frac{\partial ln f^{(0)}}{\partial e} \frac{\partial e}{\partial t}
+  \end{gathered}
+  \label{EQUATION::推导lnt} ~
+\end{equation}
+
+
+
+与位置相关的第二项：
+
+\begin{equation}
+  \begin{gathered}
+    \frac{\partial ln f^{(0)}}{\partial \xi^i} =
+    \frac{\partial ln f^{(0)}}{\partial \rho} \frac{\partial \rho}{\partial \xi^i} +     \frac{\partial ln f^{(0)}}{\partial u^j} \frac{\partial u^j}{\partial \xi^i} +     \frac{\partial ln f^{(0)}}{\partial e} \frac{\partial e}{\partial \xi^i} + \frac{1}{J}\frac{\partial J}{\partial \xi^i}
+  \end{gathered}
+  \label{EQUATION::推导lnxi} ~
+\end{equation}
+
+
+
+推导过程中的中间项：
+\begin{equation}
+  \begin{gathered}
+    \frac{\partial ln f^{(0)}}{\partial \rho}=\frac{\partial}{\partial \rho}ln \rho=\frac{1}{\rho} \\
+    \frac{\partial ln f^{(0)}}{\partial u^j}=-\frac{3}{4e} \frac{\partial}{\partial u^j}(v^iv^j+u^iu^j-v^iu^j-u^iv^j)g_{ij}=\frac{3}{2e}\iota^i g_{ij} \\
+    \frac{\partial ln f^{(0)}}{\partial e}=-\frac{\partial}{\partial e}(\frac{3}{4}{\iota^i\iota^jg_{ij}}+\frac{3}{2} ln e )=\frac{1}{e}(\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2})
+  \end{gathered}
+\end{equation}
+
+
+将中间项代入方程(\ref{EQUATION::推导lnt})、(\ref{EQUATION::推导lnxi})，最终整理(\ref{EQUATION::Kn的关系}),得到：
+
+
+
+
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{f^{(1)}}{f^{(0)}}=
+    -\tau [\frac{1}{\rho}(\frac{\partial \rho}{\partial t} + v^{i}\frac{\partial \rho}{\partial \xi^i}) + \frac{3}{2e}\iota^i g_{ij} (\frac{\partial u^j}{\partial t}+ v^i \frac{\partial u^j}{\partial \xi^i}) \\
+      + \frac{1}{e} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\partial e}{\partial t} + v^i \frac{\partial e}{\partial \xi^i}) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i}   + v^i  \frac{1}{J}\frac{\partial J}{\partial \xi^i} ]
+  \end{gathered}
+\end{equation}
+
+
+% \begin{equation}
+%   \boxed{
+%     \begin{aligned}
+%        & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial \xi^i}=-\rho \frac{\partial u^i}{\partial \xi^i}-\rho \Gamma_{ki}^{i}u^k
+%       \\
+%        & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial \xi^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial \xi^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial \xi^j} - \frac{2e}{3}\frac{\partial \rho}{\partial \xi^j}) \\
+%        & \partial_{t}e + u^i\frac{\partial e}{\partial  \xi^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial \xi^{i}}  + \Gamma_{ki}^i u^k)                                                                                                                                       \\
+%     \end{aligned}
+%   }
+%   \label{EQUATION::Eluer非守恒} ~
+% \end{equation}
+
+
+为了简化上述关系式，代入同为0阶的Euler方程（\ref{EQUATION::Eluer非守恒}），整理得到：
+
+非守恒的形式可以写为:
+\begin{equation}
+  \begin{aligned}
+     & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial \xi^i}=-\rho \frac{\partial u^i}{\partial \xi^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial \xi^i}
+    \\
+     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial \xi^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial \xi^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial \xi^j} - \frac{2e}{3}\frac{\partial \rho}{\partial \xi^j}) \\
+     & \partial_{t}e + u^i\frac{\partial e}{\partial  \xi^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial \xi^{i}}  + \frac{1}{J} \frac{\partial J}{\partial \xi^i}u^i)                                                                                                        \\
+  \end{aligned}
+  \label{EQUATION::Eluer非守恒} ~
+\end{equation}
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{f^{(1)}}{f^{(0)}}=
+    -\tau [ -\frac{\partial u^i}{\partial \xi^i} -u^i \frac{1}{J} \frac{\partial J}{\partial \xi^i}  + \frac{\iota^i}{\rho} \frac{\partial \rho}{\partial \xi^i} +\frac{3}{2e}\iota^i g_{ij} (\iota^i \frac{\partial u^j}{\partial \xi^i}-g^{ij}\frac{2}{3}\frac{\partial e}{\partial \xi^i}-g^{ij}\frac{2e}{3\rho}\frac{\partial \rho}{\partial \xi^i}-\Gamma_{ik}^j u^iu^k) \\
+    + (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\iota^i}{e}\frac{\partial e}{\partial \xi^i}-\frac{2}{3}\frac{\partial u^i}{\partial \xi^i}-\frac{2}{3}\frac{1}{J} \frac{\partial J}{\partial \xi^i}u^i) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i} + v^i  \frac{1}{J}\frac{\partial J}{\partial \xi^i}
+    ]
+  \end{gathered}
+\end{equation}
+
+
+
+% \begin{equation}
+%   \boxed{
+%     \begin{aligned}
+%        & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial \xi^i}=-\rho \frac{\partial u^i}{\partial \xi^i}-\rho \Gamma_{ki}^{i}u^k
+%       \\
+%        & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial \xi^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial \xi^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial \xi^j} - \frac{2e}{3}\frac{\partial \rho}{\partial \xi^j}) \\
+%        & \partial_{t}e + u^i\frac{\partial e}{\partial  \xi^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial \xi^{i}}  + \Gamma_{ki}^i u^k)                                                                                                                                       \\
+%     \end{aligned}
+%   }
+%   \label{EQUATION::Eluer非守恒} ~
+% \end{equation}
+
+
+
+归并整理得到：
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{f^{(1)}}{f^{(0)}}=
+    -\tau [ \mathcal{E}
+      +\frac{3}{2e}(\iota^i \iota_j \frac{\partial u^j}{\partial \xi^i} -\frac{\iota^j\iota_j}{3}\frac{\partial u^i}{\partial \xi^i}-\frac{\iota^j\iota_j}{3} \Gamma_{ki}^i u^k)
+      + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) + v^i  \frac{1}{J}\frac{\partial J}{\partial \xi^i}
+    ]
+  \end{gathered}
+\end{equation}
+
+记，
+$$
+  \mathcal{E}= (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^i
+$$
+
+
+将第二项整理成对称张量的形式：
+
+
+\begin{equation}
+  \begin{gathered}
+    \iota^i \iota^i \frac{\partial u^j}{\partial \xi^i} =\frac{1}{2} (\iota^j \iota_i \frac{\partial u^i}{\partial \xi^j}+  \iota^i \iota_j \frac{\partial u^j}{\partial \xi^i})
+    = \frac{\iota_i \iota_j}{2} (g^{jm} \frac{\partial u^i}{\partial \xi^m}+g^{im} \frac{\partial u^j}{\partial \xi^m})
+  \end{gathered}
+\end{equation}
+
+
+% 代入后得到：
+
+% \begin{equation}
+%   \begin{gathered}
+%     \frac{f^{(1)}}{f^{(0)}}=
+%     -\tau [ (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^i
+%     +\frac{3}{2e}(\frac{\iota_i \iota_j}{2} (g^{jk} \frac{\partial u^i}{\partial \xi^k}+g^{ji} \frac{\partial u^j}{\partial \xi^k}) -\frac{\iota^j\iota_j}{3}\frac{\partial u^i}{\partial \xi^i}-\frac{\iota^j\iota_j}{3} \Gamma_{ki}^i u^k) \\
+%     + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k)
+%     ]
+%   \end{gathered}
+% \end{equation}
+
+代入后整理得到
+\begin{equation}
+  \begin{gathered}
+    \frac{f^{(1)}}{f^{(0)}}=
+    -\tau [\mathcal{E}
+      +\frac{3\iota_i \iota_j}{2e}(\frac{1}{2} (g^{jm} \frac{\partial u^i}{\partial \xi^m}+g^{jm}\Gamma_{ml}^i u^l+g^{im} \frac{\partial u^j}{\partial \xi^m}+g^{im}\Gamma_{ml}^j u^l) -\frac{g^{ij}}{3}\frac{\partial u^l}{\partial \xi^l}-\frac{g^{ij}}{3} \Gamma_{kl}^l u^k) \\
+      + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{3\iota_i\iota_j}{4e}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) + v^i  \frac{1}{J}\frac{\partial J}{\partial \xi^i}
+    ]
+  \end{gathered}
+\end{equation}
+
+
+
+第三项为对称张量，可以得到
+\begin{equation}
+  \begin{gathered}
+    \mathcal{R}^{ij} =g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{\iota_i\iota_j}{2}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) \\
+    \mathcal{R}^{ji}= g_{ij} (\iota^i\Gamma_{i k}^{j} v^i v^k - \iota^j \Gamma_{j k}^{i} u^j u^k) - \frac{\iota_i\iota_j}{2}(g^{im}\Gamma_{ml}^j u^l + g^{jm}\Gamma_{ml}^i u^l) \\
+  \end{gathered}
+\end{equation}
+
+\begin{equation}
+  \begin{gathered}
+    \mathcal{R}^{ij} = \frac{1}{2}(\mathcal{R}^{ij}+\mathcal{R}^{ji})=\frac{g_{ij}}{2}(\Gamma_{jk}^i \iota^j\iota^j\iota^k + \Gamma_{ik}^j \iota^i\iota^i\iota^k )
+  \end{gathered}
+\end{equation}
+
+
+% 再次整理：
+% \begin{equation}
+%   \begin{gathered}
+%     \frac{f^{(1)}}{f^{(0)}}=
+%     -\tau [ (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^i
+%     +\frac{3\iota_i \iota_j}{2e}(\frac{1}{2} (g^{jk} \frac{\partial u^i}{\partial \xi^k}+g^{ji} \frac{\partial u^j}{\partial \xi^k}) -\frac{g^{ij}}{3}\frac{\partial u^l}{\partial \xi^l}-\frac{g^{ij}}{3} \Gamma_{kl}^l u^k) \\
+%     + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k)
+%     ]
+%   \end{gathered}
+% \end{equation}
+
+
+
+
+
+
+
+
+最终，可以整理得到
+\begin{equation}
+  \boxed{
+    \begin{gathered}
+      f^{(1)}=
+      -\tau [ \mathcal{E}
+        +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+        +  \mathcal{R}^{ij}  + v^i  \frac{1}{J}\frac{\partial J}{\partial \xi^i}
+      ]{f^{(0)}}
+    \end{gathered}
+  }
+\end{equation}
+
+
+
+
+记，
+\begin{equation}
+  \begin{gathered}
+    \mathcal{S}^{ij}=\frac{1}{2} (g^{jk} u^i|_k+g^{ik} u^j|_k) -\frac{g^{ij}}{3}u^l|_l\\
+    u^i|_k= \frac{\partial u^i}{\partial \xi^k}+\Gamma_{kl}^i u^l\\
+    u^j|_k= \frac{\partial u^j}{\partial \xi^k}+\Gamma_{kl}^j u^l\\
+    u^l|_l= \frac{\partial u^l}{\partial \xi^l}+\Gamma_{kl}^l u^l
+  \end{gathered}
+\end{equation}
+
+
+我们的目的是为了通过$f^{(1)}$推导得到$\sigma^{\alpha\beta(1)}$和 $q^{\beta (1)}$：
+
+
+首先，给出一些推导热流项$ \sigma^{\alpha\beta(1)}$所用到的关系：
+\begin{equation}
+  \begin{gathered}
+    \int \iota^\alpha \iota^\beta \mathcal{E} f^{(0)} d \bar{\varsigma}=0
+  \end{gathered}
+\end{equation}
+
+\begin{equation}
+  \begin{gathered}
+    \int \iota^\alpha \iota^\beta \iota_i \iota_j  f^{(0)}  d \bar{\varsigma}=\frac{4}{9}\rho e^2 (g^{\alpha \beta}g_{ij}+\delta^{\alpha}_i \delta^{\beta}_j+\delta^{\alpha}_j \delta^{\beta}_i)=\frac{8}{9}\rho e^2
+  \end{gathered}
+\end{equation}
+
+由于$i$、$j$对称，当$i\neq j,g_{ij}=0$。且由于$tr(\mathcal{S}^{ij})=0$, 因此第一项可以消去。
+
+\begin{equation}
+  \begin{gathered}
+    \int \iota^\alpha \iota^\beta \mathcal{R}^{ij} f^{(0)}   d \bar{\varsigma}= \int \iota^\alpha \iota^\beta \mathcal{R}^{ij}  \frac{g_{ij}}{2}(\Gamma_{jk}^i \iota^j\iota^j\iota^k + \Gamma_{ik}^j \iota^i\iota^i\iota^k ) f^{(0)}  d \bar{\varsigma} =0
+  \end{gathered}
+\end{equation}
+
+\begin{equation}
+  \begin{gathered}
+    \int v^i \iota^\alpha \iota^\beta  f^{(0)} d \bar{\varsigma}
+  \end{gathered}
+\end{equation}
+
+代入$\sigma^{\alpha\beta(1)}$表达式，整理得到，
+\begin{equation}
+  \begin{gathered}
+    \sigma^{\alpha\beta(1)}=\int \iota^{\alpha} \iota^{\beta} f^{(1)}  d \bar{\varsigma}= \int  -\tau \iota^\alpha \iota^\beta [ \mathcal{E}
+      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+      +  \mathcal{R}^{ij}
+    ]{f^{(0)}} d \bar{\varsigma} \\
+    = - \frac{4}{3} \rho e \tau  \mathcal{S}^{\alpha\beta} =  -2 \mu \mathcal{S}^{\alpha\beta}
+  \end{gathered}
+\end{equation}
+
+其中，剪切黏度$\mu$的表达式已在（\ref{EQUATION::viscosity}）给出。
+
+
+接下来，给出一些推导热流项$q^{\alpha (1)}$所用到的关系：
+
+\begin{equation}
+  \begin{gathered}
+    \int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota_i \iota_j  f^{(0)}  d \bar{\varsigma} =0
+  \end{gathered}
+\end{equation}
+
+
+$$
+  \mathcal{E}= (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^i
+$$
+
+
+
+\begin{equation}
+  \begin{gathered}
+    \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{\varsigma} =0
+  \end{gathered}
+\end{equation}
+
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{3}{4e}\int g_{\beta\gamma} g_{ij} \iota^i\iota^j\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{\varsigma} =\frac{70}{9}g^{\alpha i}\rho e^2
+  \end{gathered}
+\end{equation}
+
+
+\begin{equation}
+  \begin{gathered}
+    \frac{5}{2} \int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{\varsigma} =\frac{50}{9}g^{\alpha i}\rho e^2
+  \end{gathered}
+\end{equation}
+
+
+
+
+
+我们来推导热流项$q^{\alpha (1)}$:
+
+
+\begin{equation}
+  \begin{gathered}
+    q^{\alpha (1)} =  \frac{1}{2J}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{\varsigma}\\
+    = -\tau  \frac{1}{2J}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha}  [ \mathcal{E}
+      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+      +  \mathcal{R}^{ij}  d \bar{\varsigma}
+    ]{f^{(0)}} d \bar{\varsigma} \\
+    = -\tau  \frac{1}{2J} \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial \xi^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{\varsigma} \\
+    = -\frac{1}{J}\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial \xi^i}
+  \end{gathered}
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+%=============================================================================
+\end{document}
+%=============================================================================

@@ -1,0 +1,87 @@
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+%
+% Mathematics, Numerics, Derivations and OpenFOAM(R)
+% Tobias Holzmann
+% Book Template
+% Update October 2020
+%
+%==============================================================================
+
+\documentclass[b5paper,9pt]{extbook}
+\usepackage{ctex}
+\usepackage{indentfirst}  %首行缩进
+\setlength{\parindent}{2em}
+\input{Pre/Pre_Packages}
+\input{Pre/Pre_Settings}
+\raggedbottom
+
+%\freeversiontrue      % << Free
+\freeversionfalse      % << Support Tobias
+
+
+
+%==============================================================================
+
+\begin{document}
+\pagenumbering{alph}
+\renewcommand\UrlFont{\color{myCiteColor}\rmfamily}
+
+
+%==============================================================================
+\pagenumbering{roman}
+%\subfile{Chapter/01_Dedicated}
+%\subfile{Chapter/02_Abstract}
+
+{
+    \hypersetup{linkcolor=myCiteColor}
+    \tableofcontents
+}
+
+
+%==============================================================================
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+
+%==============================================================================
+%\subfile{Chapter/03_MathematicNotation}
+%\subfile{Chapter/04_ConservationOfMass}
+%\subfile{Chapter/05_ConservationOfMomentum}
+\subfile{Chapter/02_NS特征方程}
+
+
+%\include{Chapter/06_ConservationOfEnergy}
+%\include{Chapter/07_ConservationOfMechanicalEnergy}
+%\include{Chapter/08_ConservationOfInternalEnergy}
+%\include{Chapter/09_ConservationOfEnthalpy}
+%\include{Chapter/10_ConservationEquationEngineers}
+%\include{Chapter/11_EquationSummary}
+%\include{Chapter/12_ShearRateTensor}
+%\include{Chapter/13_CauchyStressTensor}
+%\include{Chapter/14_BulkViscosity}
+%\include{Chapter/15_DeviationOfMomentum}
+%\include{Chapter/16_TurbulenceModelling}
+%\include{Chapter/17_ShearRateTensorFunctionsOpenFoam}
+%\include{Chapter/18_SimplePisoPimple}
+%\subfile{Chapter/19_FlowCharts}
+%\include{Chapter/20_Relaxation}
+%\include{Chapter/21_EquationUnits}
+%\include{Chapter/22_OpenFOAMLearning}
+
+
+%==============================================================================
+%\include{Appendix/Appendix_ReynoldsStressEqn}
+
+
+%==============================================================================
+\bibliographystyle{plainnat}
+\bibliography{Bibtex/Bibliothek}
+
+%==============================================================================
+%\include{Cover/Cover_LastCoverPage}
+
+
+\end{document}
+
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
