@@ -1,0 +1,46 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Chen(2021)]{ChenHudong2021LBM}
+Hudong Chen.
+\newblock Volumetric lattice boltzmann models in general curvilinear
+  coordinates: Theoretical formulation.
+\newblock \emph{Frontiers in Applied Mathematics and Statistics}, 7, 2021.
+\newblock ISSN 2297-4687.
+\newblock \doi{10.3389/fams.2021.691582}.
+\newblock URL
+  \url{https://www.frontiersin.org/article/10.3389/fams.2021.691582}.
+
+\bibitem[Frisch et~al.(1986)Frisch, Hasslacher, and Pomeau]{frisch1986lattice}
+Uriel Frisch, Brosl Hasslacher, and Yves Pomeau.
+\newblock Lattice-gas automata for the navier-stokes equation.
+\newblock \emph{Physical review letters}, 56\penalty0 (14):\penalty0 1505,
+  1986.
+
+\bibitem[Kajishima and Taira(2016)]{kajishima2016computational}
+Takeo Kajishima and Kunihiko Taira.
+\newblock \emph{Computational fluid dynamics: incompressible turbulent flows}.
+\newblock Springer, 2016.
+
+\bibitem[Love and Cianci(2011)]{love2011boltzmann}
+Peter~J Love and Donato Cianci.
+\newblock From the boltzmann equation to fluid mechanics on a manifold.
+\newblock \emph{Philosophical Transactions of the Royal Society A:
+  Mathematical, Physical and Engineering Sciences}, 369\penalty0
+  (1944):\penalty0 2362--2370, 2011.
+
+\bibitem[Mendoza et~al.(2013)Mendoza, Succi, and Herrmann]{mendoza2013flow}
+Miller Mendoza, Sauro Succi, and Hans~J Herrmann.
+\newblock Flow through randomly curved manifolds.
+\newblock \emph{Scientific reports}, 3\penalty0 (1):\penalty0 1--6, 2013.
+
+\bibitem[Viggen(2014)]{viggen2014lattice}
+Erlend~Magnus Viggen.
+\newblock The lattice boltzmann method: Fundamentals and acoustics.
+\newblock 2014.
+
+\end{thebibliography}
