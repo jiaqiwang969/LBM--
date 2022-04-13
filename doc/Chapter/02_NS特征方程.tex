@@ -492,7 +492,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \begin{equation}
   \begin{aligned}
     \Pi^{kmn}= \int  (u^k+\iota^k)( u^m + \iota^m )(u^n + \iota^n) f d \bar{v} =                                                       \\  \rho u^k u^m u^n   +  u^k\int \iota^m \iota^n f  d \bar{v} +   u^n \int  \iota^m \iota^{i} f d \bar{v}  +  u^m  \int   \iota^n \iota^{k} f d \bar{v} + \int \iota^m \iota^n  \iota^{k} f  d \bar{v} \\
-    = \rho  u^m u^n u^k  - (u^k \sigma^{mn}+u^n \sigma^{km}+u^m \sigma^{nk}) + \int \iota^m \iota^n  \iota^{k} f  d \bar{v}
+    = \rho  u^m u^n u^k  - (u^k \sigma^{mn}+u^n \sigma^{km}+u^m \sigma^{nk}) + {\color{green} \cancel{\int \iota^m \iota^n  \iota^{k} f  d \bar{v}}}
     \\
     \frac{1}{2} g_{jk}\Pi^{i j k}
     = \underbrace{\frac{1}{2} \rho g_{jk} u^j u^k u^i  + \frac{1}{2} u^i\int g_{jk} \iota^{j} \iota^{k} f  d \bar{v}}_{\rho  E u^i } + \\
@@ -694,7 +694,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \begin{equation}
   \begin{gathered}
     \boxed{
-    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  \int \iota^m \iota^n  \iota^{k} f  d \bar{v})
+    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  {\color{green} \cancel{\int \iota^m \iota^n  \iota^{k} f  d \bar{v}}})
     }
   \end{gathered}
   \label{动量方程输运形式4} ~
@@ -792,7 +792,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                        \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p \frac{1}{J}  \frac{\partial}{\partial q^{i}}( J u^i)  \\
     \end{aligned}
   }
   \label{EQUATION::Eluer} ~
@@ -800,15 +800,16 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %这里的\Gamma经过一些转换。参考Taira-A50
 %
 %
+
 非守恒的形式可以写为:
 \begin{equation}
   \boxed{
-  \begin{aligned}
-     & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho \frac{\partial u^i}{\partial q^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial q^i}
-    \\
-     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k} =-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}                                                \\
-     & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                                                 \\
-  \end{aligned}
+    \begin{aligned}
+       & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho (\frac{\partial u^i}{\partial q^i}+  \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)
+      \\
+       & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k} =-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}                    \\
+       & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
+    \end{aligned}
   }
   \label{EQUATION::Eluer非守恒} ~
 \end{equation}
@@ -829,6 +830,9 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \end{equation}
 %
 %
+
+
+%
 %
 %
 %
@@ -839,21 +843,27 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 类似的，由前面由关系式（\ref{EQUATION::CE EXPANDING}）已经给出了从Bolzmann方程到Navier-Stokes方程的推导思路，因此需要获得$f^{(1)}$一阶项的矩积分表达式，包括$\sigma^{\alpha\beta(1)}$、 $q^{\alpha (1)}$,为了不影响整体，将具体推导过程放在附录A。
 
-推导结果总结为：
+
+其结论为：
 \begin{equation}
   \begin{gathered}
-    \sigma^{ij(1)}=  - 2 \mu \mathcal{S}^{ij}
+    \sigma^{ij(1)}= 2 \mu \mathcal{S}^{\alpha\beta}   {\color{red} + 2\rho \tau \Gamma_{ki}^k u^i}
   \end{gathered}
 \end{equation}
 
 
 
+
 \begin{equation}
   \begin{gathered}
-    q^{\alpha (1)}
-    = -\frac{1}{J}\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i}
+    \mathcal{Q}^{\alpha (1)}
+    = -\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i} = -\kappa \frac{\partial T}{\partial q^i} 
   \end{gathered}
 \end{equation}
+
+记，热传导率$\kappa=\frac{5}{2}\rho R^2 T \tau$
+
+
 
 
 \begin{equation}
@@ -862,52 +872,103 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \end{gathered}
 \end{equation}
 
-
-
-
 \begin{equation}
-  \boxed{
-    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
-  }
-  \label{动量方程输运形式} ~
-\end{equation}
-%
-
-\begin{equation}
-  \begin{gathered}
-    \boxed{
-    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}  = -\sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}}  - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J q^{i})  - \Gamma^i_{j k}g_{ii}(u^k \sigma^{ij}+u^j \sigma^{ki}+ 2g^{jk}q^i)
-    }
-  \end{gathered}
-  \label{动量方程输运形式4} ~
+  \begin{aligned}
+    \mu=\frac{2}{3} \rho e \tau=p \tau=\rho R T \tau
+  \end{aligned}
 \end{equation}
 
-将$\sigma\simeq \sigma^{(0)}+\sigma^{(1)}$和$q\simeq q^{(0)}+q^{(1)}$代入(\ref{动量方程输运形式})、（\ref{动量方程输运形式4}），整理得到：
 
 
-\begin{equation}
-  \boxed{
-    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
-  }
-  \label{动量方程输运形式} ~
-\end{equation}
-%
+
+将$\sigma\simeq \sigma^{(0)}+\sigma^{(1)}$和$\mathcal{Q}\simeq \mathcal{Q}^{(0)}+\mathcal{Q}^{(1)}$代入(\ref{动量方程输运形式})、（\ref{动量方程输运形式4}），整理得到：
+
+
+% \begin{equation}
+%   \boxed{
+%     \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = - \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) -\Gamma_{mn}^{j} \sigma^{mn}
+%   }
+%   \label{动量方程输运形式} ~
+% \end{equation}
+
+% \begin{equation}
+%   \begin{gathered}
+%     \boxed{
+%     \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  \int \iota^m \iota^n  \iota^{k} f  d \bar{v})
+%     }
+%   \end{gathered}
+%   \label{动量方程输运形式4} ~
+% \end{equation}
+% %
+
+% \begin{equation}
+%   \begin{gathered}
+%     \boxed{
+%     \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk}) -  \Gamma^i_{mn}  g_{ik} \int \iota^m \iota^n  \iota^{k} f  d \bar{v}
+%     }
+%   \end{gathered}
+% \end{equation}
+
+% $$
+%   \mathcal{Q}^{\alpha (1)}=\frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{v}
+% $$
+% %
+
+% \begin{equation}
+%   \begin{gathered}
+%     \int \iota^m \iota^n  \iota^{k} f^{(1)}  d \bar{v} = \int \iota^m \iota^n  \iota^{k} [\iota^i\mathcal{E}_i
+%     +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+%     + {\color{blue} \frac{3}{2e} \mathcal{R}_{ijk} \iota^i\iota^i\iota^k} + {\color{red} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}}
+%     ] f^{(0)} d \bar{v} \\
+%     = \int \iota^m \iota^n  \iota^{k} [\iota^i\mathcal{E}_i
+%     + {\color{blue} \frac{3}{2e} \mathcal{R}_{ijk} \iota^i\iota^i\iota^k}
+%     ] f^{(0)} d \bar{v} \\
+%   \end{gathered}
+% \end{equation}
+
+
+
+
+% \begin{equation}
+%   \boxed{
+%     \begin{aligned}
+%        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
+%       \\
+%        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
+%        & \quad\quad\quad\quad + \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}                                                              \\
+%        & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}  = -  p (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
+%     \end{aligned}
+%   }
+% \end{equation}
+
 
 \begin{equation}
   \boxed{
     \begin{aligned}
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
-       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
-       & \quad\quad\quad\quad + \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}                                                              \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}  = -  p (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
+       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k} \\
+       & \quad\quad\quad\quad =-g^{i j} \frac{\partial p}{\partial q^{j}}+ \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}  \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} =-  p \frac{1}{J}  \frac{\partial}{\partial q^{i}}( J u^i) + \frac{1}{J} \frac{\partial}{\partial q^i} ( J \kappa \frac{\partial T}{\partial q^i} ) \\
+       & \quad\quad\quad\quad  + 2\mu \mathcal{S}^{ij} \frac{\partial u_j}{\partial q^i} + \Gamma_{mn}^i g_{ik}(u^n 2\mu\mathcal{S}^{km} + u^m 2\mu\mathcal{S}^{nk} )   \\
     \end{aligned}
   }
-  \label{EQUATION::Eluer} ~
 \end{equation}
 
 
+这与无坐标的形式Navier-Stokes方程相统一：
 
+
+%参考https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)
+\begin{equation}
+  \begin{aligned}
+     & \partial_t \rho + \nabla \cdot (\rho \boldsymbol{u})=0                                                      \\
+     & \partial_{t}\left(\rho \boldsymbol{u} \right)+ \nabla \cdot (\rho \boldsymbol{u} \boldsymbol{u}) = -\nabla p + \nabla \cdot ( 2\mu \mathcal{S}) \\
+     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})= -p \nabla \cdot \boldsymbol{u} + 2\mu \mathcal{S}:\nabla \boldsymbol{u}    +  \nabla \cdot(\kappa \nabla T) \\
+  \end{aligned}
+  \label{EQUATION::Eluer2} ~
+\end{equation}
+%
 
 
 \appendix
@@ -932,7 +993,7 @@ $$
 
 展开得到$\mathcal{O}\left(K n^{0}\right)$为
 \begin{equation}
-  f^{(1)}=-\tau\left[\partial_{t_{0}} f^{(0)}+v^{i} \frac{\partial}{\partial q^{i}}\left(f^{(0)}\right) + v^if^{(0)} \frac{1}{J} \frac{\partial J}{\partial q^i} -v^{j} v^{k}\Gamma_{j k}^{i}\frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right]
+  f^{(1)}=-\tau\left[\partial_{t_{0}} f^{(0)}+v^{i} \frac{\partial}{\partial q^{i}}\left(f^{(0)}\right) + {\color{red} v^if^{(0)} \frac{1}{J} \frac{\partial J}{\partial q^i}} -v^{j} v^{k}\Gamma_{j k}^{i}\frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right]
   \label{EQUATION::B.4} ~
 \end{equation}
 %
@@ -947,26 +1008,6 @@ $$
 % %
 
 
-平衡分布同(\ref{EQUATION::平衡分布})以Maxwell-Boltzmann形式给出的：
-%
-%
-
-\begin{equation}
-  \boxed{
-    f^{(0)}(| \boldsymbol{\iota}|) = \rho J {(\frac{3}{4\pi e}})^{3/2}\exp({-\frac{3 {\iota^i\iota^jg_{ij}}}{4e}})
-  }
-\end{equation}
-
-将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2})可以得到曲线坐标系下的Bolzmann方程：
-
-\begin{equation}
-  \boxed{
-  \frac{\partial Jf}{\partial t}+v^{i} \frac{\partial Jf}{\partial q^{i}}  - \Gamma_{j k}^{i} v^{j} v^{k}  \frac{\partial Jf}{\partial  v^{i}}  =\Omega
-  }
-\end{equation}
-
-
-
 
 首先，我们先来探索一下$f^{(1)}$与$f^{(0)}$在宏观参数上的关系：
 
@@ -975,8 +1016,8 @@ $$
 
 \begin{equation}
   \begin{gathered}
-    \frac{f^{(1)}}{f^{(0)}}=-\frac{\tau}{f^{(0)}}\left[\partial_{t_{0}} f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( f^{(0)}\right)+v^i f^{(0)}\frac{1}{J} \frac{\partial J}{\partial q^i}-v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right] \\
-    = -\tau \left[\partial_{t_{0}} ln f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( ln f^{(0)}\right)+v^i \frac{1}{J} \frac{\partial J}{\partial q^i} -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  ln f^{(0)}\right)\right]
+    \frac{f^{(1)}}{f^{(0)}}=-\frac{\tau}{f^{(0)}}\left[\partial_{t_{0}} f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( f^{(0)}\right)+ {\color{red} v^i f^{(0)}\frac{1}{J} \frac{\partial J}{\partial q^i}}-v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right)\right] \\
+    = -\tau \left[\partial_{t_{0}} ln f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( ln f^{(0)}\right)+ {\color{red} v^i \frac{1}{J} \frac{\partial J}{\partial q^i}} -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  ln f^{(0)}\right)\right]
   \end{gathered}
   \label{EQUATION::Kn的关系} ~
 \end{equation}
@@ -986,7 +1027,7 @@ $$
 
 
 \begin{equation}
-  ln f^{(0)} = \frac{3}{2} ln(\frac{3}{4\pi}) + ln \rho - \frac{3}{2} ln e - (\frac{3}{4e}){\iota^i\iota^jg_{ij}}+ln J
+  ln f^{(0)} = \frac{3}{2} ln(\frac{3}{4\pi}) + ln \rho - \frac{3}{2} ln e - (\frac{3}{4e}){\iota^i\iota^jg_{ij}}+ {\color{red} ln J}
 \end{equation}
 
 
@@ -1019,7 +1060,7 @@ $$
 \begin{equation}
   \begin{gathered}
     \frac{\partial ln f^{(0)}}{\partial q^i} =
-    \frac{\partial ln f^{(0)}}{\partial \rho} \frac{\partial \rho}{\partial q^i} +     \frac{\partial ln f^{(0)}}{\partial u^j} \frac{\partial u^j}{\partial q^i} +     \frac{\partial ln f^{(0)}}{\partial e} \frac{\partial e}{\partial q^i} + \frac{1}{J}\frac{\partial J}{\partial q^i}
+    \frac{\partial ln f^{(0)}}{\partial \rho} \frac{\partial \rho}{\partial q^i} +     \frac{\partial ln f^{(0)}}{\partial u^j} \frac{\partial u^j}{\partial q^i} +     \frac{\partial ln f^{(0)}}{\partial e} \frac{\partial e}{\partial q^i} + {\color{red} \frac{1}{J}\frac{\partial J}{\partial q^i}}
   \end{gathered}
   \label{EQUATION::推导lnxi} ~
 \end{equation}
@@ -1047,7 +1088,7 @@ $$
   \begin{gathered}
     \frac{f^{(1)}}{f^{(0)}}=
     -\tau [\frac{1}{\rho}(\frac{\partial \rho}{\partial t} + v^{i}\frac{\partial \rho}{\partial q^i}) + \frac{3}{2e}\iota^i g_{ij} (\frac{\partial u^j}{\partial t}+ v^i \frac{\partial u^j}{\partial q^i}) \\
-      + \frac{1}{e} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\partial e}{\partial t} + v^i \frac{\partial e}{\partial q^i}) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i}   + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i} ]
+    + \frac{1}{e} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\partial e}{\partial t} + v^i \frac{\partial e}{\partial q^i}) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i}   + {\color{red} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i} }]
   \end{gathered}
 \end{equation}
 
@@ -1067,26 +1108,26 @@ $$
 
 为了简化上述关系式，代入同为0阶的Euler方程（\ref{EQUATION::Eluer非守恒}），整理得到：
 
-非守恒的形式可以写为:
-\begin{equation}
-  \begin{aligned}
-     & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho \frac{\partial u^i}{\partial q^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial q^i}
-    \\
-     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial q^j} - \frac{2e}{3}\frac{\partial \rho}{\partial q^j}) \\
-     & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                                                                                                      \\
-  \end{aligned}
-  \label{EQUATION::Eluer非守恒} ~
-\end{equation}
+% 非守恒的形式可以写为:
+% \begin{equation}
+%   \begin{aligned}
+%      & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho \frac{\partial u^i}{\partial q^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial q^i}
+%     \\
+%      & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial q^j} - \frac{2e}{3}\frac{\partial \rho}{\partial q^j}) \\
+%      & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                                                                                                      \\
+%   \end{aligned}
+%   \label{EQUATION::Eluer非守恒} ~
+% \end{equation}
 
 
-\begin{equation}
-  \begin{gathered}
-    \frac{f^{(1)}}{f^{(0)}}=
-    -\tau [ -\frac{\partial u^i}{\partial q^i} -u^i \frac{1}{J} \frac{\partial J}{\partial q^i}  + \frac{\iota^i}{\rho} \frac{\partial \rho}{\partial q^i} +\frac{3}{2e}\iota^i g_{ij} (\iota^i \frac{\partial u^j}{\partial q^i}-g^{ij}\frac{2}{3}\frac{\partial e}{\partial q^i}-g^{ij}\frac{2e}{3\rho}\frac{\partial \rho}{\partial q^i}-\Gamma_{ik}^j u^iu^k) \\
-    + (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\iota^i}{e}\frac{\partial e}{\partial q^i}-\frac{2}{3}\frac{\partial u^i}{\partial q^i}-\frac{2}{3}\frac{1}{J} \frac{\partial J}{\partial q^i}u^i) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i} + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}
-    ]
-  \end{gathered}
-\end{equation}
+% \begin{equation}
+%   \begin{gathered}
+%     \frac{f^{(1)}}{f^{(0)}}=
+%     -\tau [ -\frac{\partial u^i}{\partial q^i} -u^i \frac{1}{J} \frac{\partial J}{\partial q^i}  + \frac{\iota^i}{\rho} \frac{\partial \rho}{\partial q^i} +\frac{3}{2e}\iota^i g_{ij} (\iota^i \frac{\partial u^j}{\partial q^i}-g^{ij}\frac{2}{3}\frac{\partial e}{\partial q^i}-g^{ij}\frac{2e}{3\rho}\frac{\partial \rho}{\partial q^i}-\Gamma_{ik}^j u^iu^k) \\
+%     + (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{3}{2}) (\frac{\iota^i}{e}\frac{\partial e}{\partial q^i}-\frac{2}{3}\frac{\partial u^i}{\partial q^i}-\frac{2}{3}\frac{1}{J} \frac{\partial J}{\partial q^i}u^i) + \frac{3}{2e}\iota^j g_{ij} v^{j} v^{k} \Gamma_{j k}^{i} + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}
+%     ]
+%   \end{gathered}
+% \end{equation}
 
 
 
@@ -1111,25 +1152,33 @@ $$
   \begin{gathered}
     \frac{f^{(1)}}{f^{(0)}}=
     -\tau [ \mathcal{E}
-      +\frac{3}{2e}(\iota^i \iota_j \frac{\partial u^j}{\partial q^i} -\frac{\iota^j\iota_j}{3}\frac{\partial u^i}{\partial q^i}-\frac{\iota^j\iota_j}{3} \Gamma_{ki}^i u^k)
-      + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}
+    +\frac{3}{2e}(\iota^i \iota_j \frac{\partial u^j}{\partial q^i} -\frac{\iota^j\iota_j}{3}\frac{\partial u^i}{\partial q^i}-\frac{\iota^j\iota_j}{3} \Gamma_{ki}^i u^k)
+    + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) + {\color{red} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}}
     ]
   \end{gathered}
+  \label{EQUATION::A9} ~
 \end{equation}
 
 记，
 $$
-  \mathcal{E}= (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^i
+  \iota^i \mathcal{E}_i= (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^i
 $$
 
 
-将第二项整理成对称张量的形式：
+将(\ref{EQUATION::A9})的第二项整理成对称张量的形式,
 
 
 \begin{equation}
   \begin{gathered}
     \iota^i \iota^i \frac{\partial u^j}{\partial q^i} =\frac{1}{2} (\iota^j \iota_i \frac{\partial u^i}{\partial q^j}+  \iota^i \iota_j \frac{\partial u^j}{\partial q^i})
     = \frac{\iota_i \iota_j}{2} (g^{jm} \frac{\partial u^i}{\partial q^m}+g^{im} \frac{\partial u^j}{\partial q^m})
+  \end{gathered}
+\end{equation}
+
+再凑项得到广义形式的对称应力张量$\mathcal{S}^{ij}$,
+\begin{equation}
+  \begin{gathered}
+    \mathcal{S}^{ij}   \equiv \frac{1}{2} (g^{jm} \frac{\partial u^i}{\partial q^m}+g^{jm}\Gamma_{ml}^i u^l+g^{im} \frac{\partial u^j}{\partial q^m}+g^{im}\Gamma_{ml}^j u^l) -\frac{g^{ij}}{3}\frac{\partial u^l}{\partial q^l}-\frac{g^{ij}}{3} \Gamma_{kl}^l u^k\\=\frac{1}{2} (g^{jk} u^i|_k+g^{ik} u^j|_k) -\frac{g^{ij}}{3}u^l|_l
   \end{gathered}
 \end{equation}
 
@@ -1146,13 +1195,13 @@ $$
 %   \end{gathered}
 % \end{equation}
 
-代入后整理得到
+因此，将方程重新整理
 \begin{equation}
   \begin{gathered}
     \frac{f^{(1)}}{f^{(0)}}=
-    -\tau [\mathcal{E}
-      +\frac{3\iota_i \iota_j}{2e}(\frac{1}{2} (g^{jm} \frac{\partial u^i}{\partial q^m}+g^{jm}\Gamma_{ml}^i u^l+g^{im} \frac{\partial u^j}{\partial q^m}+g^{im}\Gamma_{ml}^j u^l) -\frac{g^{ij}}{3}\frac{\partial u^l}{\partial q^l}-\frac{g^{ij}}{3} \Gamma_{kl}^l u^k) \\
-      + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{3\iota_i\iota_j}{4e}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}
+    -\tau [\iota^i \mathcal{E}_i
+    +\frac{3\iota_i \iota_j}{2e}\mathcal{S}^{ij}
+    + \frac{3}{2e} g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{3\iota_i\iota_j}{4e}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) +{\color{red}  2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}}
     ]
   \end{gathered}
 \end{equation}
@@ -1162,14 +1211,14 @@ $$
 第三项为对称张量，可以得到
 \begin{equation}
   \begin{gathered}
-    \mathcal{R}^{ij} =g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{\iota_i\iota_j}{2}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) \\
-    \mathcal{R}^{ji}= g_{ij} (\iota^i\Gamma_{i k}^{j} v^i v^k - \iota^j \Gamma_{j k}^{i} u^j u^k) - \frac{\iota_i\iota_j}{2}(g^{im}\Gamma_{ml}^j u^l + g^{jm}\Gamma_{ml}^i u^l) \\
+    \mathcal{R}^{(ij)} =g_{ij} (\iota^j\Gamma_{j k}^{i} v^j v^k - \iota^i\Gamma_{i k}^{j} u^i u^k) - \frac{\iota_i\iota_j}{2}(g^{jm}\Gamma_{ml}^i u^l + g^{im}\Gamma_{ml}^j u^l) \\
+    \mathcal{R}^{(ji)}= g_{ij} (\iota^i\Gamma_{i k}^{j} v^i v^k - \iota^j \Gamma_{j k}^{i} u^j u^k) - \frac{\iota_i\iota_j}{2}(g^{im}\Gamma_{ml}^j u^l + g^{jm}\Gamma_{ml}^i u^l) \\
   \end{gathered}
 \end{equation}
 
 \begin{equation}
   \begin{gathered}
-    \mathcal{R}^{ij} = \frac{1}{2}(\mathcal{R}^{ij}+\mathcal{R}^{ji})=\frac{g_{ij}}{2}(\Gamma_{jk}^i \iota^j\iota^j\iota^k + \Gamma_{ik}^j \iota^i\iota^i\iota^k )
+    \frac{1}{2}(\mathcal{R}^{(ij)}+\mathcal{R}^{(ji)})=\frac{g_{ij}}{2}(\Gamma_{jk}^i \iota^j\iota^j\iota^k + \Gamma_{ik}^j \iota^i\iota^i\iota^k )  \equiv \mathcal{R}_{ijk} \iota^i\iota^i\iota^k
   \end{gathered}
 \end{equation}
 
@@ -1197,9 +1246,9 @@ $$
   \boxed{
     \begin{gathered}
       f^{(1)}=
-      -\tau [ \mathcal{E}
-        +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-        +  \mathcal{R}^{ij}  + v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}
+      -\tau [ \iota^i\mathcal{E}_i
+      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+      + {\color{blue} \frac{3}{2e} \mathcal{R}_{ijk} \iota^i\iota^i\iota^k} + {\color{red} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}}
       ]{f^{(0)}}
     \end{gathered}
   }
@@ -1208,24 +1257,15 @@ $$
 
 
 
-记，
+
+接下来，我们就可以通过$f^{(1)}$推导得到$\sigma^{\alpha\beta(1)}$和 $q^{\beta (1)}$：
+
+
+首先，给出一些推导热流项$ \sigma^{\alpha\beta(1)}=-\int \iota^{\alpha} \iota^{\beta} f^{(1)}  d \bar{v}$所用到的关系：
+
 \begin{equation}
   \begin{gathered}
-    \mathcal{S}^{ij}=\frac{1}{2} (g^{jk} u^i|_k+g^{ik} u^j|_k) -\frac{g^{ij}}{3}u^l|_l\\
-    u^i|_k= \frac{\partial u^i}{\partial q^k}+\Gamma_{kl}^i u^l\\
-    u^j|_k= \frac{\partial u^j}{\partial q^k}+\Gamma_{kl}^j u^l\\
-    u^l|_l= \frac{\partial u^l}{\partial q^l}+\Gamma_{kl}^l u^l
-  \end{gathered}
-\end{equation}
-
-
-我们的目的是为了通过$f^{(1)}$推导得到$\sigma^{\alpha\beta(1)}$和 $q^{\beta (1)}$：
-
-
-首先，给出一些推导热流项$ \sigma^{\alpha\beta(1)}$所用到的关系：
-\begin{equation}
-  \begin{gathered}
-    \int \iota^\alpha \iota^\beta \mathcal{E} f^{(0)} d \bar{v}=0
+    \int \iota^\alpha \iota^\beta \iota^i \mathcal{E}_i f^{(0)} d \bar{v}=0
   \end{gathered}
 \end{equation}
 
@@ -1239,31 +1279,28 @@ $$
 
 \begin{equation}
   \begin{gathered}
-    \int \iota^\alpha \iota^\beta \mathcal{R}^{ij} f^{(0)}   d \bar{v}= \int \iota^\alpha \iota^\beta \mathcal{R}^{ij}  \frac{g_{ij}}{2}(\Gamma_{jk}^i \iota^j\iota^j\iota^k + \Gamma_{ik}^j \iota^i\iota^i\iota^k ) f^{(0)}  d \bar{v} =0
+    {\color{blue} \int \iota^\alpha \iota^\beta \iota^i\iota^i\iota^k \mathcal{R}_{ijk}  f^{(0)}   d \bar{v} =0}
   \end{gathered}
 \end{equation}
 
 \begin{equation}
   \begin{gathered}
-    \int v^i \iota^\alpha \iota^\beta  f^{(0)} d \bar{v}
+    {\color{red} \int 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}  f^{(0)} d \bar{v} = 2\rho  \Gamma_{ki}^k u^i}
   \end{gathered}
 \end{equation}
 
-代入$\sigma^{\alpha\beta(1)}$表达式，整理得到，
+最终，代入$\sigma^{\alpha\beta(1)}$表达式，整理得到，
 \begin{equation}
   \begin{gathered}
-    \sigma^{\alpha\beta(1)}=\int \iota^{\alpha} \iota^{\beta} f^{(1)}  d \bar{v}= \int  -\tau \iota^\alpha \iota^\beta [ \mathcal{E}
-      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-      +  \mathcal{R}^{ij}
-    ]{f^{(0)}} d \bar{v} \\
-    = - \frac{4}{3} \rho e \tau  \mathcal{S}^{\alpha\beta} =  -2 \mu \mathcal{S}^{\alpha\beta}
+    \sigma^{\alpha\beta(1)} =-\int \iota^{\alpha} \iota^{\beta} f^{(1)}  d \bar{v} \\
+    = \frac{4}{3} \rho e \tau  \mathcal{S}^{\alpha\beta}{\color{red} + 2\rho \tau \Gamma_{ki}^k u^i} =  2 \mu \mathcal{S}^{\alpha\beta}  {\color{red} + 2\rho \tau \Gamma_{ki}^k u^i}
   \end{gathered}
 \end{equation}
 
 其中，剪切黏度$\mu$的表达式已在（\ref{EQUATION::viscosity}）给出。
 
 
-接下来，给出一些推导热流项$q^{\alpha (1)}$所用到的关系：
+接下来，给出一些推导热流项$\mathcal{Q}^{\alpha (1)}=\frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{v}$所用到的关系：
 
 \begin{equation}
   \begin{gathered}
@@ -1272,9 +1309,15 @@ $$
 \end{equation}
 
 
-$$
-  \mathcal{E}= (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^i
-$$
+
+
+
+
+\begin{equation}
+  \begin{gathered}
+    \int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma} \iota^{\alpha} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}  f^{(0)} d \bar{v} = 0
+  \end{gathered}
+\end{equation}
 
 
 
@@ -1283,6 +1326,8 @@ $$
     \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v} =0
   \end{gathered}
 \end{equation}
+
+
 
 
 
@@ -1303,21 +1348,30 @@ $$
 
 
 
-我们来推导热流项$q^{\alpha (1)}$:
+最终，代入热流项$\mathcal{Q}^{\alpha (1)}$的表达式，整理得到，
 
 
 \begin{equation}
   \begin{gathered}
-    q^{\alpha (1)} =  \frac{1}{2J}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{v}\\
-    = -\tau  \frac{1}{2J}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha}  [ \mathcal{E}
-      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-      +  \mathcal{R}^{ij}  d \bar{v}
+    \mathcal{Q}^{\alpha (1)}
+    = -\tau  \frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha}  [\iota^i\mathcal{E}_i
+    +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+    + {\color{blue} \frac{3}{2e} \mathcal{R}_{ijk} \iota^i\iota^i\iota^k} + {\color{red} 2v^i  \frac{1}{J}\frac{\partial J}{\partial q^i}}
     ]{f^{(0)}} d \bar{v} \\
-    = -\tau  \frac{1}{2J} \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v} \\
-    = -\frac{1}{J}\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i}
+    = -\tau  \frac{1}{2} \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v} \\
+    = -\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i} = -\kappa \frac{\partial T}{\partial q^i} 
   \end{gathered}
 \end{equation}
 
+
+\begin{equation}
+  \begin{gathered}
+    \mathcal{Q}^{\alpha (1)}
+    = -\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i} = -\kappa \frac{\partial T}{\partial q^i} 
+  \end{gathered}
+\end{equation}
+
+记，热传导率$\kappa=\frac{5}{2}\rho R^2 T \tau$
 
 
 
