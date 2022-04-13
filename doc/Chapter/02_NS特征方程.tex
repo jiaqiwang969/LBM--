@@ -310,19 +310,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \label{EQUATION::广义物质导数} ~
 \end{equation}
 
-
-由于体积中的粒子数是一个标量，转换到曲线坐标系下，$f$不发生改变，即使是在粒子密度不变的情况下。为了满足Bolzmann方程在曲线坐标系下的不变性，需要将其乘以Jacobian系数$J$。
-
-重新对(\ref{EQUATION::Bolzmann笛卡尔})的拉格朗日形式${D Jf(\boldsymbol{q}, \boldsymbol{v}, t) \over Dt} =\Omega(f)$进行展开
-
-\begin{equation}
-  \frac{\partial Jf}{\partial t}+v^{j} \frac{\partial Jf}{\partial q^{j}} + \dot{v}^{i} \frac{\partial Jf}{\partial  v^{i}} =\Omega(Jf)
-  \label{EQUATION::Bolzmann中间过程2} ~
-\end{equation}
-
-%
-%
-根据牛顿第一定律，在没有外力的情况下，粒子具有恒定的速度，并在笛卡尔坐标系（三维）中沿直线运动。但在曲线坐标系下，则沿流形面运动，有如下关系：
+根据牛顿第一定律，在没有外力的情况下，粒子具有恒定的速度，并在笛卡尔坐标系（三维）中沿直线运动。但在曲线坐标系下，沿流形面运动，考虑广义相对性原理，有如下时空转换关系：
 
 %如果有外力，可以把外力加上。这个外力特指body force density
 %
@@ -340,7 +328,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 由于，
 
 \begin{equation}
-  \frac{\partial \boldsymbol{g}_{i}}{\partial q^{j}}=\frac{\partial g_{i}}{\partial q^{j}} \cdot g^{k} g_{k} \equiv \Gamma_{i j}^{k} g_{k}
+  \frac{\partial g_{i}}{\partial q^{j}}=\frac{\partial g_{i}}{\partial q^{j}} \cdot g^{k} g_{k} \equiv \Gamma_{i j}^{k} g_{k}
   \label{EQUATION::A.4} ~
 \end{equation}
 %
@@ -361,13 +349,28 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \dot{v}^{i}=- \Gamma_{j k}^{i}v^{j} v^{k}
   \label{EQUATION::A.6} ~
 \end{equation}
+
+由于体积中的粒子数是一个标量，转换到曲线坐标系下，$f$不发生改变，即使是在粒子密度不变的情况下。为了满足Bolzmann方程在曲线坐标系下的不变性，需要将其乘以Jacobian系数$J$。基于此，重新对(\ref{EQUATION::Bolzmann笛卡尔})的拉格朗日形式${D f(\boldsymbol{q}\boldsymbol{v}, t) \over Dt} =\Omega(f)$进行展开。同时，由于$Jf$代替$f$,可以将$\dot{v}$移到括号内，即
+
+% $$
+% \frac{1}{J}v^i \frac{\partial J}{\partial q^i} - \Gamma_{jk}^i v^k - \Gamma_{kj}^k v^j =0
+% $$
+
+\begin{equation}
+  \frac{\partial N}{\partial t}+\frac{\partial (v^i N)}{\partial q^{j}} +  \frac{\partial (\dot{v}^{i} N)}{\partial  v^{i}} =\Omega(Jf)
+  \label{EQUATION::Bolzmann中间过程2} ~
+\end{equation}
+
+%
+%
+
 %
 
 将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2})便可得到曲线坐标系下的Bolzmann方程：
 
 \begin{equation}
   \boxed{
-  \frac{\partial Jf}{\partial t}+v^{i} \frac{\partial Jf}{\partial q^{i}}  - \Gamma_{j k}^{i} v^{j} v^{k}  \frac{\partial Jf}{\partial  v^{i}}  =\Omega
+    \frac{\partial N}{\partial t}+\frac{\partial (v^i N)}{\partial q^{j}} -  \frac{\partial ( \Gamma_{j k}^{i} v^{j} v^{k}  N)}{\partial  v^i } =\Omega(Jf)
   }
   \label{EQUATION::Bolzamman 曲线} ~
 \end{equation}
@@ -466,10 +469,44 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \end{equation}
 %
 
+二阶动量通量张量定义为$\Pi^{ij} \equiv \int  v^{i} v^{j} f(\boldsymbol{q}, \bar{v}, t)d \bar{v}$。将动量通量张量展开,其中相对速度的矩积分为0，整理得到
+\begin{equation}
+  \begin{aligned}
+    \Pi^{i j}=\int   \left(u^{i} u^{j}+u^{i} \iota^{j}+\iota^{i} u^{j}+\iota^{i} \iota^{j}\right) f  d \bar{v} \\
+    =\rho u^{i} u^{j}+\int \iota^{i} \iota^{j} f  d \bar{v} = \rho u^{i} u^{j} -\sigma^{i j}
+  \end{aligned}
+  \label{EQUATION::动量通量推导} ~
+\end{equation}
+
+右式的$\sigma^{i j}$被称作Cauchy应力对称张量，$\sigma^{i j}=-\int \iota^{i} \iota^{j} f  d \bar{v}$。Cauchy应力张量取决于分布函数$f$，因此，后续仍需要通过C-E展开近似$f$，推导Cauchy应力张量$\sigma^{i j}$的宏观表达式，才能得出完整宏观的动量守恒方程。由(\ref{EQUATION::A.20})第二项已经给出了$\sigma^{i j(0)}=-\frac{2}{3}\rho e g^{i j}=- g^{i j}p$，可用于后续Euler方程动量方程的推导。
+
+
+类似地，三阶能量通量张量定义为$\Pi^{kmn}= \int  v^n v^{m} v^{n} f(\boldsymbol{q}, \bar{v}, t) d \bar{v}$。
+
+
+
+将$\Pi^{kmn}$、$\frac{1}{2} g_{jk}\Pi^{i j k}$展开整理得到
+
+
+
+\begin{equation}
+  \begin{aligned}
+    \Pi^{kmn}= \int  (u^k+\iota^k)( u^m + \iota^m )(u^n + \iota^n) f d \bar{v} =                                                       \\  \rho u^k u^m u^n   +  u^k\int \iota^m \iota^n f  d \bar{v} +   u^n \int  \iota^m \iota^{i} f d \bar{v}  +  u^m  \int   \iota^n \iota^{k} f d \bar{v} + \int \iota^m \iota^n  \iota^{k} f  d \bar{v} \\
+    = \rho  u^m u^n u^k  - (u^k \sigma^{mn}+u^n \sigma^{km}+u^m \sigma^{nk}) + \int \iota^m \iota^n  \iota^{k} f  d \bar{v}
+    \\
+    \frac{1}{2} g_{jk}\Pi^{i j k}
+    = \underbrace{\frac{1}{2} \rho g_{jk} u^j u^k u^i  + \frac{1}{2} u^i\int g_{jk} \iota^{j} \iota^{k} f  d \bar{v}}_{\rho  E u^i } + \\
+    +  \underbrace{\frac{1}{2} u^k g_{jk}  \int   \iota^{j} \iota^{i} f d \bar{v}  + \frac{1}{2} u^j g_{jk}  \int   \iota^{k} \iota^{i} f d \bar{v} }_{ -u_j \sigma^{ij}} +  \underbrace{\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f  d \bar{v}}_{\mathcal{Q}^i}
+  \end{aligned}
+  \label{中间过程} ~
+\end{equation}
+
+
+其中，$\frac{1}{2} g_{jk}\Pi^{i j k}$的第一项$\rho  E u^i$与能量的对流（advection）有关，第二项$u_j \sigma^{ij}$与Cauchy应力做功有关，第三项为热流向量$\mathcal{Q}^i$，与能量的扩散（diffusion）有关。该关系将被用于能量方程的推导。
 
 %
 
-将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个守恒方程。由于粒子速度$v^j$与位置参数$q$无关，满足$v^i \frac{\partial N}{\partial q^i}=\frac{\partial}{\partial q^i}(v^i N)$。由于$\frac{\partial (v^j v^k \Gamma_{jk}^i)}{\partial v^i}=\frac{\partial(-\dot{v}^i)}{\partial v^i}=0$, 利用分步积分，可以将$v^j v^k \Gamma_{jk}^i$移到偏微分里面，整理得到
+接下来，将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个守恒方程。由于粒子速度$v^j$与位置参数$q$无关，满足$v^i \frac{\partial N}{\partial q^i}=\frac{\partial}{\partial q^i}(v^i N)$。
 
 %其中，$\frac{1}{2}|\boldsymbol{v}|^2=\frac{1}{2}g_{jk}v^{j}v^{k}$，
 %
@@ -485,12 +522,15 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 \begin{equation}
   \begin{aligned}
-     & \int  \left\{\partial_{t} N+\frac{\partial}{\partial q^{i}}\left(v^{i} N\right)-\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)\right\}d\bar{v}=0                                                                     \\
-     & \int \left\{\partial_{t}  v^{j} N+\frac{\partial}{\partial q^{i}}\left( v^{j} v^{i} N\right)-v^{j}\frac{\partial}{\partial v^{l}}\left(  v^{m} v^{n} \Gamma_{mn}^{l} N\right)\right\}d \bar{v}=0                                                  \\
-     & \frac{1}{2}\int \left\{\partial_{t} g_{jk} v^{j}v^{k} N+ \frac{\partial}{\partial q^{i}}\left( g_{jk}v^{j} v^{k} v^{i} N\right)- g_{jk} v^{j}v^{k}  \frac{\partial}{\partial v^{i}}\left( v^{m} v^{n} \Gamma_{mn}^{i} N\right)\right\}d \bar{v}=0 \\
+     & \int  \left\{\partial_{t} N+\frac{\partial}{\partial q^{i}}\left(v^{i} N\right)-\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)   \right\}d\bar{v}=0                                                                   \\
+     & \int \left\{\partial_{t}  v^{j} N+\frac{\partial}{\partial q^{i}}\left( v^{j} v^{i} N\right)-v^{j}\frac{\partial}{\partial v^{l}}\left(  v^{m} v^{n} \Gamma_{mn}^{l} N\right)    \right\}d \bar{v}=0                                               \\
+     & \frac{1}{2}\int \left\{\partial_{t} g_{jk} v^{j}v^{k} N+ \frac{\partial}{\partial q^{i}}\left( g_{jk}v^{j} v^{k} v^{i} N\right)- g_{jk} v^{j}v^{k}  \frac{\partial}{\partial v^{i}}\left( v^{m} v^{n} \Gamma_{mn}^{i} N\right) \right\}d \bar{v}=0 \\
   \end{aligned}
   \label{EQUATION::A.12} ~
 \end{equation}
+%
+
+
 %
 
 % 将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个守恒方程。由于粒子速度$\boldsymbol{v}$与时间$t$、位置$q$均无关，偏微分可从积分中提出，有
@@ -514,7 +554,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %
 %
 \begin{equation}
-  \partial_{t}(J \rho)+\frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
+  \partial_{t}(J \rho)+\frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right) =0
   \label{EQUATION::A.13} ~
 \end{equation}
 %
@@ -547,30 +587,21 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %
 %
 
-其中，类似(\ref{EQUATION::定义张量})，动量通量张量定义为$\Pi^{ij} \equiv \int  v^{i} v^{j} f(\boldsymbol{q}, \bar{v}, t)d \bar{v}$。
 
-将动量通量张量展开,其中相对速度的矩积分为0，整理得到
-\begin{equation}
-  \begin{aligned}
-    \Pi^{i j}=\int   \left(u^{i} u^{j}+u^{i} \iota^{j}+\iota^{i} u^{j}+\iota^{i} \iota^{j}\right) f  d \bar{v} \\
-    =\rho u^{i} u^{j}+\int \iota^{i} \iota^{j} f  d \bar{v} = \rho u^{i} u^{j} -\sigma^{i j}
-  \end{aligned}
-  \label{EQUATION::动量通量推导} ~
-\end{equation}
 
 将动量通量张量代入（\ref{动量输运方程}）可以得到:
 
 \begin{equation}
   \boxed{
-    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n} = \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) + \Gamma_{mn}^{j} \sigma^{mn}
-  }
+    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n}
+    = \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) + \Gamma_{mn}^{j} \sigma^{mn} }
   \label{动量方程输运形式} ~
 \end{equation}
 %
 
 
 
-其中，左式第二、三项与动量的对流有关，右式的$\sigma^{i j}$被称作Cauchy应力对称张量，$\sigma^{i j}=-\int \iota^{i} \iota^{j} f  d \bar{v}$。Cauchy应力张量取决于分布函数$f$，因此，后续仍需要通过C-E展开近似$f$，推导Cauchy应力张量$\sigma^{i j}$的宏观表达式，才能得出完整宏观的动量守恒方程。
+其中，左式第二、三项与动量的对流有关, 其中第三项为曲线坐标系与为保持沿流线运动所施加的非惯性力有关。
 %
 %
 
@@ -580,7 +611,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 \begin{equation}
   \boxed{
-  \partial_{t}\left(\rho E\right)  + \frac{1}{J} \frac{\partial}{\partial q^{i}}\left( \frac{J}{2} g_{jk}\Pi^{i j k} \right) + g_{ik} \Gamma^i_{mn} \Pi^{kmn}=0
+  \partial_{t}\left(\rho E\right)  + \frac{1}{J} \frac{\partial}{\partial q^{i}}\left( \frac{J}{2} g_{jk}\Pi^{i j k} \right) + g_{ik} \Gamma^i_{mn} \Pi^{kmn} =0
   }
   \label{能量输运1} ~
 \end{equation}
@@ -594,29 +625,6 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %   \label{能量输运1} ~
 % \end{equation}
 % %
-
-其中，类似(\ref{EQUATION::定义张量})，能量通量张量定义为$\Pi^{kmn}= \int  v^n v^{m} v^{n} f(\boldsymbol{q}, \bar{v}, t) d \bar{v}$。
-
-
-
-将$\Pi^{kmn}$、$\frac{1}{2} g_{jk}\Pi^{i j k}$展开整理得到
-
-
-
-\begin{equation}
-  \begin{aligned}
-    \Pi^{kmn}= \int  (u^k+\iota^k)( u^m + \iota^m )(u^n + \iota^n) f d \bar{v} =                                                       \\  \rho u^k u^m u^n   +  u^k\int \iota^m \iota^n f  d \bar{v} +   u^n \int  \iota^m \iota^{i} f d \bar{v}  +  u^m  \int   \iota^n \iota^{k} f d \bar{v} + \int \iota^m \iota^n  \iota^{k} f  d \bar{v} \\
-    = \rho  u^m u^n u^k  - (u^k \sigma^{mn}+u^n \sigma^{km}+u^m \sigma^{nk}) + \int \iota^m \iota^n  \iota^{k} f  d \bar{v}
-    \\
-    \frac{1}{2} g_{jk}\Pi^{i j k}
-    = \underbrace{\frac{1}{2} \rho g_{jk} u^j u^k u^i  + \frac{1}{2} u^i\int g_{jk} \iota^{j} \iota^{k} f  d \bar{v}}_{\rho  E u^i } + \\
-    +  \underbrace{\frac{1}{2} u^k g_{jk}  \int   \iota^{j} \iota^{i} f d \bar{v}  + \frac{1}{2} u^j g_{jk}  \int   \iota^{k} \iota^{i} f d \bar{v} }_{ -u_j \sigma^{ij}} +  \underbrace{\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f  d \bar{v}}_{\mathcal{Q}^i}
-  \end{aligned}
-  \label{中间过程} ~
-\end{equation}
-
-
-其中，$\frac{1}{2} g_{jk}\Pi^{i j k}$的第一项$\rho  E u^i$与能量的对流（advection）有关，第二项$u_j \sigma^{ij}$与Cauchy应力做功有关，第三项为热流向量$\mathcal{Q}^i$，与能量的扩散（diffusion）有关。
 
 % 代入（\ref{能量输运1}）可以得到:
 
@@ -643,7 +651,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 % 结合动量方程和连续性方程，整理有：
 
-执行(\ref{能量输运1})$-$(\ref{动量输运方程})$*u_j$, 由于关系$u_j\frac{\partial u^j}{\partial t}=\frac{\partial}{\partial t}( \frac{1}{2}u^ju_j)$,$u_j\frac{\partial u^i u^j}{\partial q^i}=\frac{\partial}{\partial q^i}( \frac{1}{2}u^i u^ju_j)$,并代入(\ref{中间过程}）整理得到：
+执行(\ref{能量输运1})$-$(\ref{动量输运方程})$*u_j$, 由于关系$u_j\frac{\partial u^j}{\partial t}=\frac{\partial}{\partial t}( \frac{1}{2}u^ju_j)$,$u_j\frac{\partial u^i u^j}{\partial q^i}=\frac{\partial}{\partial q^i}( \frac{1}{2}u^i u^ju_j)$,并代入(\ref{中间过程}），最终整理得到：
 
 % \begin{equation}
 %   \boxed{
@@ -686,7 +694,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \begin{equation}
   \begin{gathered}
     \boxed{
-    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}     =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  \int \iota^m \iota^n  \iota^{k} f  d \bar{v})
+    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  \int \iota^m \iota^n  \iota^{k} f  d \bar{v})
     }
   \end{gathered}
   \label{动量方程输运形式4} ~
@@ -711,7 +719,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 
 \begin{equation}
-  \pi^{i (0)} =\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f^{(0)}  d \bar{v}= 0
+  \mathcal{Q}^{i (0)} =\frac{1}{2}\int g_{jk} \iota^{j} \iota^{k}  \iota^{i} f^{(0)}  d \bar{v}= 0
   \label{EQUATION::heat flux} ~
 \end{equation}
 
@@ -762,7 +770,8 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %
 %
 
-将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})
+
+将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})，同时由于关系式$\Gamma_{ki}^k u^i = \Gamma_{mn}^n u^n + \Gamma_{mn}^m u^m$
 ，我们得到曲线坐标系下的Euler方程：
 
 
@@ -783,7 +792,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}  = -  p (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                        \\
     \end{aligned}
   }
   \label{EQUATION::Eluer} ~
@@ -793,15 +802,18 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 %
 非守恒的形式可以写为:
 \begin{equation}
+  \boxed{
   \begin{aligned}
      & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho \frac{\partial u^i}{\partial q^i}-\rho u^i \frac{1}{J} \frac{\partial J}{\partial q^i}
     \\
-     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k}=-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}= \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial q^j} - \frac{2e}{3}\frac{\partial \rho}{\partial q^j}) \\
-     & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                                                                                                      \\
+     & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k} =-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}                                                \\
+     & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)                                                 \\
   \end{aligned}
+  }
   \label{EQUATION::Eluer非守恒} ~
 \end{equation}
 
+% = \frac{g^{i j}}{\rho} (-\frac{2\rho}{3}\frac{\partial e}{\partial q^j} - \frac{2e}{3}\frac{\partial \rho}{\partial q^j}) ^m       
 
 这与无坐标的形式Euler方程相统一：
 
