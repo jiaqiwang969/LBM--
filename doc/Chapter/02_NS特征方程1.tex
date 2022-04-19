@@ -809,7 +809,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \boxed{
     \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n}
     = \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) + \Gamma_{mn}^{j} \sigma^{mn} }
-  \label{动量方程输运形式} ~
+  \label{动量方程输运} ~
 \end{equation}
 %
 将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})，同时由于关系式$2\Gamma_{ik}^i u^k = \Gamma_{mn}^m u^n + \Gamma_{nm}^n u^m$
@@ -965,7 +965,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \end{equation}
 
 
-无坐标的形式Navier-Stokes方程相统一：
+这与无坐标的形式Navier-Stokes方程相统一：
 
 
 %参考https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)
@@ -975,7 +975,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
      & \partial_{t}\left(\rho \boldsymbol{u} \right)+ \nabla \cdot (\rho \boldsymbol{u} \boldsymbol{u}) = -\nabla p + \nabla \cdot ( 2\mu \mathcal{S})                                      \\
      & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})= -p \nabla \cdot \boldsymbol{u} + 2\mu \mathcal{S}:\nabla \boldsymbol{u}    +  \nabla \cdot(\kappa \nabla T) \\
   \end{aligned}
-  \label{EQUATION::Eluer2} ~
+  \label{EQUATION::E} ~
 \end{equation}
 %
 
@@ -1315,7 +1315,7 @@ $$
 \begin{equation}
   \begin{gathered}
     \sigma^{\alpha\beta(1)} =-\int \iota^{\alpha} \iota^{\beta} f^{(1)}  d \bar{v}
-    = \frac{4}{3} \rho e \tau  \mathcal{S}^{'\alpha\beta} +   \Gamma_{ki}^k u^i g^{\alpha\beta} p\tau =  2 \mu \mathcal{S}^{\alpha\beta}
+    = \frac{4}{3} \rho e \tau  \mathcal{S}^{\alpha\beta} =  2 \mu \mathcal{S}^{\alpha\beta}
   \end{gathered}
 \end{equation}
 
