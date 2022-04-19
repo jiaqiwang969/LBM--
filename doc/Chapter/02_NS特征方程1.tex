@@ -4,15 +4,16 @@
 %==============================================================================
 
 
-\chapter{广义Navier-Stokes方程 }
+\chapter{Navier-Stokes 特征方程 }
 \label{CHAPTER::Characteristic}
 \pagenumbering{arabic}
 
 %
 %
 %
-摘要：近些年，有一些研究工作开始尝试将晶格气体自动机拓展为模拟任意曲面上的流体，这对于数值算法的通用化是非常有意义的。在广义坐标系下，可以研究任意（弯曲或非弯曲）流形或坐标系上的几何以及其动力学关系。一个流形，你可以简单地把它想象成一个光滑的“表面”，一切粒子运动都发生在上面。借鉴广义相对论的思想，利用微分几何的工具，引入几何表征的“惯性力”,统一惯性系和非惯性系，使其适用于弯曲空间，即广义Bolzmann方程。参考 \cite{love2011boltzmann, mendoza2013flow,viggen2014lattice,ChenHudong2021LBM}，在其基础之上，我们整理并完善了从广义Boltzmann方程到广义Euler方程、广义Naver-Stokes方程的推导，主要贡献是拓展到了能量方程。通过对比无坐标系形式，我们可以更深入理解Euler方程、Naver-Stokes方程背后的流声物理意义，尤其是区分运动本身与几何空间各自所带来的效应。运动方面，为后续与流动相关的湍流模型的植入、声传播相关的黎曼求解器的植入做铺垫；几何方面，同样可以退化为传统的同狭义相对论思想的经典惯性坐标系，为后续柱坐标系下的旋流管道线性Euler方程的推导以及对任意坐标系下的无反射边界条件的推导做铺垫。
-
+\begin{itemize}
+  \item 从介观Boltzmann运动方程推导曲线坐标系下的Euler方程和Navier-Stokes方程；
+\end{itemize}
 
 
 
@@ -166,13 +167,17 @@ BGK碰撞模型同时引入了弛豫时间$\tau$, 该参数与剪切黏度$\mu$�
 %
 %
 %
-\section{广义Boltzmann运动方程}
+\section{曲线坐标系下的Boltzmann运动方程}
+%
+%
+近些年，有一些研究工作开始尝试将晶格气体自动机拓展为模拟任意表面上的流体，这对于数值算法的通用化是非常有意义的。在广义坐标系下，可以研究任意（弯曲或非弯曲）流形或坐标系上的几何以及其动力学关系。一个流形，你可以简单地把它想象成一个光滑的“表面”，一切粒子运动都发生在上面。其思想是利用微分几何工具，将曲线坐标系映射到笛卡尔坐标系下求解。参考 \cite{love2011boltzmann, mendoza2013flow,viggen2014lattice,ChenHudong2021LBM}，在其基础之上，我们整理并完善了从曲线坐标系下的Boltzmann方程到广义Naver-Stokes方程的推导，并将推导的过程拓展至可压Navier-Stokes方程。基于此，可以更深入理解Euler方程、Naver-Stokes方程背后的流声物理意义，同时也为后续柱坐标系下的旋流管道线性Euler方程的推导以及对任意坐标系下的无反射边界条件的推导起铺垫作用。
 %
 %
 
 
 
-参考\cite{flugge1972tensor,kajishima2016computational}，我们引入一些微分几何的概念。逆变（contravariant，也称反变）和协变（covariant，也称共变）描述一个向量（或更广义来说，张量）的坐标，用于描述在向量空间的基底／坐标系变换之下，如何通过雅可比矩阵对其坐标进行相互转换。
+
+参考\cite{kajishima2016computational}，我们引入一些微分几何的概念。逆变（contravariant，也称反变）和协变（covariant，也称共变）描述一个向量（或更广义来说，张量）的坐标，用于描述在向量空间的基底／坐标系变换之下，如何通过雅可比矩阵对其坐标进行相互转换。
 
 对于位置, 我们可以分别在笛卡尔坐标系$\boldsymbol{x}(x,y,z)$和曲线坐标系$\boldsymbol{q}(\xi,\eta,\zeta)$下展开。对于笛卡尔坐标系来说，其逆变和协变相等，为方便与曲线坐标系做对比，同样写成逆变和协变两个基向量的展开形式：
 %
@@ -305,7 +310,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \label{EQUATION::广义物质导数} ~
 \end{equation}
 
-根据牛顿第一定律，在没有外力的情况下，粒子具有恒定的速度，并在笛卡尔坐标系（三维）中沿直线运动。但在广义坐标系下，空间发生扭曲，则沿流形面运动，考虑广义相对性原理，有如下时空转换关系：
+根据牛顿第一定律，在没有外力的情况下，粒子具有恒定的速度，并在笛卡尔坐标系（三维）中沿直线运动。但在曲线坐标系下，沿流形面运动，考虑广义相对性原理，有如下时空转换关系：
 
 %如果有外力，可以把外力加上。这个外力特指body force density
 %
@@ -335,38 +340,51 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \label{EQUATION::A.5} ~
 \end{equation}
 %
+%
+
+因此，可以看到，在广义坐标空间中还存在一个“离心加速度”（惯性力），即
+%
+%
 \begin{equation}
   \dot{v}^{i}=- \Gamma_{j k}^{i}v^{j} v^{k}
   \label{EQUATION::A.6} ~
 \end{equation}
 
-%
+由于体积中的粒子数是一个标量，转换到曲线坐标系下，$f$不发生改变，即使是在粒子密度不变的情况下。为了满足Bolzmann方程在曲线坐标系下的不变性，需要将其乘以Jacobian系数$J$。
 
-最终，引入“离心加速度”（惯性力），推广到广义Bolzmann运动方程：
-%
-%
+定义粒子密度函数为
+\begin{equation}
+  J(\boldsymbol{q}) f(\boldsymbol{q}, \bar{v}, t) \equiv N(\boldsymbol{q}, \bar{v}, t)
+\end{equation}
 
-% 由于体积中的粒子数是一个标量，转换到曲线坐标系下，$f$不发生改变，即使是在粒子密度不变的情况下。为了满足Bolzmann方程在曲线坐标系下的不变性，需要将其乘以Jacobian系数$J$。基于此，重新对(\ref{EQUATION::Bolzmann笛卡尔})的拉格朗日形式${D f(\boldsymbol{q}\boldsymbol{v}, t) \over Dt} =\Omega(f)$进行展开。同时，由于$Jf$代替$f$,可以将$\dot{v}$移到括号内，即
+记
+\begin{equation}
+  \int d \bar{v} \equiv \int d v^{1} d v^{2} d v^{3}
+\end{equation}
+
+
+$N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相空间中以($\dot{q}$,$\dot{v}$)的速度行走，在没有碰撞的情况下守恒，所以它满足相空间里的连续性方程。
+
 
 % $$
 % \frac{1}{J}v^i \frac{\partial J}{\partial q^i} - \Gamma_{jk}^i v^k - \Gamma_{kj}^k v^j =0
 % $$
 
-% \begin{equation}
-%   \frac{\partial N}{\partial t}+\frac{\partial (v^i N)}{\partial q^{j}} +  \frac{\partial (\dot{v}^{i} N)}{\partial  v^{i}} =\Omega(Jf)
-%   \label{EQUATION::Bolzmann中间过程2} ~
-% \end{equation}
+\begin{equation}
+  \frac{\partial N}{\partial t}+\frac{\partial (v^i N)}{\partial q^{j}} +  \frac{\partial (\dot{v}^{i} N)}{\partial  v^{i}} =0
+  \label{EQUATION::Bolzmann中间过程2} ~
+\end{equation}
 
 %
 %
 
 %
 
-% 将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2})便可得到曲线坐标系下的Bolzmann方程：
+将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2}),并加上碰撞算子，便可得到曲线坐标系下的Bolzmann方程：
 
 \begin{equation}
   \boxed{
-    \frac{\partial f}{\partial t}+\frac{\partial (v^i f)}{\partial q^{j}} -  \frac{\partial ( \Gamma_{j k}^{i} v^{j} v^{k}  f)}{\partial  v^i } =\Omega(f)
+    \frac{\partial N}{\partial t}+\frac{\partial (v^i N)}{\partial q^{j}} -  \frac{\partial ( \Gamma_{j k}^{i} v^{j} v^{k}  N)}{\partial  v^i } =\Omega(Jf)
   }
   \label{EQUATION::Bolzamman 曲线} ~
 \end{equation}
@@ -377,28 +395,19 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 
 
-% 定义粒子密度函数为
-% \begin{equation}
-%   J(\boldsymbol{q}) f(\boldsymbol{q}, \bar{v}, t) \equiv N(\boldsymbol{q}, \bar{v}, t)
-% \end{equation}
 
-记
+
+
+那么我们就有以下规定的矩积分
+%
+%
 \begin{equation}
-  \int d \bar{v} \equiv \int d v^{1} d v^{2} d v^{3}
+  \begin{aligned}
+    \int N(\boldsymbol{q}, \bar{v}, t)   d \bar{v}     & =J(\boldsymbol{q}) \int f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t)                                \\
+    \int v^{i} N(\boldsymbol{q}, \bar{v}, t) d \bar{v} & =J(\boldsymbol{q}) \int v^{i} f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t) u^{i}(\boldsymbol{q}, t)
+  \end{aligned}
+  \label{EQUATION::A.11} ~
 \end{equation}
-
-
-
-% 那么我们就有以下规定的矩积分
-% %
-% %
-% \begin{equation}
-%   \begin{aligned}
-%     \int N(\boldsymbol{q}, \bar{v}, t)   d \bar{v}     & =J(\boldsymbol{q}) \int f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t)                                \\
-%     \int v^{i} N(\boldsymbol{q}, \bar{v}, t) d \bar{v} & =J(\boldsymbol{q}) \int v^{i} f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t) u^{i}(\boldsymbol{q}, t)
-%   \end{aligned}
-%   \label{EQUATION::A.11} ~
-% \end{equation}
 %
 %
 
@@ -502,7 +511,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 %
 
-基于上述关系，我们开始着手将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个积分方程。由于粒子速度$v^j$与位置参数$q$无关，满足$v^i \frac{\partial f}{\partial q^i}=\frac{\partial}{\partial q^i}(v^i f)$。
+接下来，将曲线坐标系下的Boltzmann方程（\ref{EQUATION::Bolzamman 曲线}）的矩进行积分，并利用（\ref{EQUATION::碰撞特性}）的碰撞特性，我们得到三个守恒方程。由于粒子速度$v^j$与位置参数$q$无关，满足$v^i \frac{\partial N}{\partial q^i}=\frac{\partial}{\partial q^i}(v^i N)$。
 
 %其中，$\frac{1}{2}|\boldsymbol{v}|^2=\frac{1}{2}g_{jk}v^{j}v^{k}$，
 %
@@ -516,18 +525,15 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 
 
-
-
 \begin{equation}
   \begin{aligned}
-     & \int  \left\{\partial_{t} f+v^{i}\frac{\partial}{\partial q^{i}}\left( f \right)-v^{m} v^{n} \Gamma_{mn}^{i} \frac{\partial}{\partial v^{i}}\left( f\right)   \right\}d\bar{v}=0                                     \\
-     & \int v^{j} \left\{\partial_{t}   N+  v^{i}\frac{\partial}{\partial q^{i}}\left( f\right)-  v^{m} v^{n} \Gamma_{mn}^{l}\frac{\partial}{\partial v^{l}}\left(  f\right)    \right\}d \bar{v}=0                         \\
-     & \frac{1}{2} \int g_{jk} v^{j}v^{k} \left\{\partial_{t}  f + v^{i} \frac{\partial}{\partial q^{i}}\left(   f\right)-    v^{m} v^{n} \Gamma_{mn}^{i}\frac{\partial}{\partial v^{i}}\left( f\right) \right\}d \bar{v}=0 \\
+     & \int  \left\{\partial_{t} N+\frac{\partial}{\partial q^{i}}\left(v^{i} N\right)-\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)   \right\}d\bar{v}=0                                                                   \\
+     & \int \left\{\partial_{t}  v^{j} N+\frac{\partial}{\partial q^{i}}\left( v^{j} v^{i} N\right)-v^{j}\frac{\partial}{\partial v^{l}}\left(  v^{m} v^{n} \Gamma_{mn}^{l} N\right)    \right\}d \bar{v}=0                                               \\
+     & \frac{1}{2}\int \left\{\partial_{t} g_{jk} v^{j}v^{k} N+ \frac{\partial}{\partial q^{i}}\left( g_{jk}v^{j} v^{k} v^{i} N\right)- g_{jk} v^{j}v^{k}  \frac{\partial}{\partial v^{i}}\left( v^{m} v^{n} \Gamma_{mn}^{i} N\right) \right\}d \bar{v}=0 \\
   \end{aligned}
   \label{EQUATION::A.12} ~
 \end{equation}
-
-
+%
 
 
 %
@@ -546,31 +552,12 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 
 
-以下操作的目的是，化简得到宏观形式的质量连续性方程、动量输运方程和能量输运方程:
+接下来，对三个守恒公式通过积分得到宏观形式的质量连续性方程、动量输运方程和能量输运方程:
 
 
-对于等式（\ref{EQUATION::A.12}）第一项，通过分步积分，推导得到$\int  v^{j} v^{k} \Gamma_{j k}^{i}  \frac{\partial}{\partial v^{i}}\left(f\right)d \bar{v}=-2\rho  \Gamma_{ki}^i u^k$，我们得到质量连续性方程如下
+对于等式（\ref{EQUATION::A.12}）第一项，通过分步积分，推导得到$\int\frac{\partial}{\partial v^{i}}\left( v^{j} v^{k} \Gamma_{j k}^{i} N\right)d \bar{v}=0$，并使用定义（\ref{EQUATION::A.11}），我们得到质量连续性方程如下
 %
 %
-
-\begin{equation}
-  \partial_{t}\rho+(\rho u^i)|_i + \rho \Gamma_{ki}^i u^k =0
-  \label{EQUATION::A.13} ~
-\end{equation}
-%
-
-可以看到，相比于传统的惯性坐标系，连续性方程多加了一项，这是由于惯性系的引入产生的影响。
-
-
-
-改写成惯性系的形式：
-
-\begin{equation}
-  \partial_{t}\rho+(\rho u^i)|_i + \rho \Gamma_{ki}^i u^k =0
-\end{equation}
-
-
-
 \begin{equation}
   \partial_{t}(J \rho)+\frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right) =0
   \label{EQUATION::A.13} ~
@@ -642,6 +629,14 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \label{能量输运1} ~
 \end{equation}
 %
+
+% \begin{equation}
+%   \boxed{
+%     \partial_{t}\left(\rho E\right)  + \frac{1}{J} \frac{\partial}{\partial q^{i}}\left( \frac{J}{2} g_{jk}\Pi^{i j k} \right) + g_{jk} \Gamma_{mn}\Pi^{njk} =0
+%   }
+%   \label{能量输运1} ~
+% \end{equation}
+% %
 
 
 % \begin{equation}
@@ -811,7 +806,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \label{动量方程输运形式} ~
 \end{equation}
 %
-将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})，同时由于关系式$\Gamma_{ik}^i u^k = \Gamma_{mn}^m u^n + \Gamma_{nm}^n u^m$
+将（\ref{EQUATION::Cauchy应力张量1})、(\ref{EQUATION::A.23}）代入公式（\ref{动量方程输运形式}），得到动量守恒方程，结合质量连续性方程(\ref{EQUATION::A.14}), 并将平衡项(\ref{EQUATION::heat flux}）代入能量输运方程(\ref{动量方程输运形式4})，同时由于关系式$2\Gamma_{ik}^i u^k = \Gamma_{mn}^m u^n + \Gamma_{nm}^n u^m$
 ，我们得到曲线坐标系下的Euler方程：
 
 
@@ -826,13 +821,26 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 % \end{equation}
 
 
+% \begin{equation}
+%   \boxed{
+%     \begin{aligned}
+%        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
+%       \\
+%        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
+%        & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p (\frac{1}{J}  \frac{\partial}{\partial q^{i}}( J u^i)  + \Gamma_{mn}^n u^m)               \\
+%     \end{aligned}
+%   }
+%   \label{EQUATION::Eluer} ~
+% \end{equation}
+
+
 \begin{equation}
   \boxed{
     \begin{aligned}
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p (\frac{1}{J}  \frac{\partial}{\partial q^{i}}( J u^i)  + \Gamma_{mn}^n u^m)               \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k            \\
     \end{aligned}
   }
   \label{EQUATION::Eluer} ~
@@ -852,8 +860,8 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
     \begin{aligned}
        & \partial_{t} \rho+ u^i \frac{\partial \rho}{\partial q^i}=-\rho (\frac{\partial u^i}{\partial q^i}+  \frac{1}{J} \frac{\partial J}{\partial q^i}u^i)
       \\
-       & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k} =-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}                    \\
-       & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + \frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
+       & \partial_{t}u^{i}+u^j \frac{\partial u^i}{\partial q^{j}}+\Gamma_{j k}^{i}  u^{j} u^{k} =-\frac{g^{i j}}{\rho} \frac{\partial p}{\partial q^{j}}                     \\
+       & \partial_{t}e + u^i\frac{\partial e}{\partial  q^{i}}  = -  \frac{p}{\rho} (\frac{\partial  u^i}{\partial q^{i}}  + 2\frac{1}{J} \frac{\partial J}{\partial q^i}u^i) \\
     \end{aligned}
   }
   \label{EQUATION::Eluer非守恒} ~
@@ -869,12 +877,12 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \begin{aligned}
      & \partial_t \rho + \nabla \cdot (\rho \boldsymbol{u})=0                                                      \\
      & \partial_{t}\left(\rho \boldsymbol{u} \right)+ \nabla \cdot (\rho \boldsymbol{u} \boldsymbol{u}) =-\nabla p \\
-     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})=-p \nabla \cdot \boldsymbol{u}      \\
+     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})=-p \nabla \cdot \boldsymbol{u}      
   \end{aligned}
   \label{EQUATION::Eluer2} ~
 \end{equation}
 %
-%
+%     & \partial_{t} p + \boldsymbol{u} \cdot \nabla p + \gamma p (\nabla \cdot \boldsymbol{u}) =0
 
 
 %
@@ -892,7 +900,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 其结论为：
 \begin{equation}
   \begin{gathered}
-    \sigma^{ij(1)}= 2 \mu \mathcal{S}^{\alpha\beta} +  2 \mu \Gamma_{ki}^k u^i g^{\alpha\beta}
+    \sigma^{ij(1)}= 2 \mu \mathcal{S}^{\alpha\beta} 
   \end{gathered}
 \end{equation}
 
@@ -902,7 +910,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \begin{equation}
   \begin{gathered}
     \mathcal{Q}^{\alpha (1)}
-    = -\frac{10}{9}\rho e \tau \frac{\partial e}{\partial q^i} g^{\alpha i}= -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{15}{2} \kappa T g^{\alpha i} \Gamma_{ki}^k
+    = -\frac{10}{9}\rho e \tau \frac{\partial e}{\partial q^i} g^{\alpha i}=  -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i} 
   \end{gathered}
 \end{equation}
 
@@ -926,7 +934,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 \begin{equation}
   \begin{gathered}
-    \int \iota^m \iota^n  \iota^{k} f^{(1)}  d \bar{v} =  -2\kappa \frac{\partial T}{\partial q^i} g^{ik} g^{mn}-15 \kappa T \Gamma_{ki}^k  g^{ik} g^{mn}
+    \int \iota^m \iota^n  \iota^{k} f^{(1)}  d \bar{v} =  -2\kappa \frac{\partial T}{\partial q^i} g^{ik} g^{mn}- \frac{25}{2}\mu \Gamma_{li}^{l}g^{ik} g^{mn}
   \end{gathered}
 \end{equation}
 
@@ -934,20 +942,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 将$\sigma\simeq \sigma^{(0)}+\sigma^{(1)}$和$\mathcal{Q}\simeq \mathcal{Q}^{(0)}+\mathcal{Q}^{(1)}$代入(\ref{动量方程输运形式})、（\ref{动量方程输运形式4}），整理得到：
 
 
-\begin{equation}
-  \begin{gathered}
-    \boxed{
-    \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}}    =  \sigma^{ij}  \frac{\partial  u_j}{\partial q^{i}} - \frac{1}{J}\frac{\partial}{\partial q^{i}} (J \mathcal{Q}^i) + \Gamma^i_{mn}  g_{ik} ( u^n \sigma^{km}+u^m \sigma^{nk} -  \int \iota^m \iota^n  \iota^{k} f  d \bar{v})
-    }
-  \end{gathered}
-\end{equation}
 
-\begin{equation}
-  \boxed{
-    \partial_{t}\left(\rho u^{j}\right)+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i} u^{j} \right)+\Gamma_{mn}^{j} \rho u^{m} u^{n}
-    = \frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \sigma^{ij} \right) + \Gamma_{mn}^{j} \sigma^{mn} }
-\end{equation}
-%
 
 
 \begin{equation}
@@ -956,9 +951,9 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}                                                                                                                                                                                        \\
-       & \quad\quad\quad\quad =-g^{i j} \frac{\partial p}{\partial q^{j}}+ \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}                                                                                                                                                               \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} =-  p \frac{1}{J}  \frac{\partial}{\partial q^{i}}( J u^i) + 2\mu \mathcal{S}^{ij} \frac{\partial u_j}{\partial q^i} + \Gamma_{mn}^i g_{ik}(u^n 2\mu\mathcal{S}^{km} + u^m 2\mu\mathcal{S}^{nk} )                                            \\
-       & \quad\quad\quad\quad  + \frac{1}{J} \frac{\partial}{\partial q^i} ( J \kappa \frac{\partial T}{\partial q^i} g^{ii}) +  2\kappa \frac{\partial T}{\partial q^i} \Gamma^i_{mn} g^{mn}     + \frac{1}{J} \frac{\partial}{\partial q^i} ( J \frac{15}{2} \kappa T g^{i i} \Gamma_{ki}^k ) +  15 \kappa T \Gamma_{ki}^k g^{mn}\Gamma^i_{mn} \\
+       & \quad\quad\quad\quad =-g^{i j} \frac{\partial p}{\partial q^{j}}+ \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}  \\ 
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k     + 2\mu \mathcal{S}^{ij} \frac{\partial u_j}{\partial q^i}  + \Gamma_{mn}^i g_{ik}(u^n 2\mu\mathcal{S}^{km} + u^m 2\mu\mathcal{S}^{nk} )                           \\
+       & \quad\quad\quad\quad  + \frac{1}{J} \frac{\partial}{\partial q^i} ( J \kappa \frac{\partial T}{\partial q^i} g^{ii}) +  2\kappa \frac{\partial T}{\partial q^i} \Gamma^i_{mn} g^{mn}     + \frac{1}{J} \frac{\partial}{\partial q^i} ( J\frac{25}{4}\mu \Gamma_{ki}^{k}g^{i i}  ) + \frac{25}{2}\mu \Gamma_{li}^{l}\Gamma^i_{mn} \\
     \end{aligned}
   }
 \end{equation}
@@ -1030,8 +1025,8 @@ $$
 
 \begin{equation}
   \begin{gathered}
-    \frac{f^{(1)}}{f^{(0)}}=-\frac{\tau}{f^{(0)}}\left[\partial_{t_{0}} f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( f^{(0)}\right)+ v^i f^{(0)}\frac{1}{J} \frac{\partial J}{\partial q^i}- 2v^i  f^{(0)}\Gamma_{ki}^i  -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right) \right] \\
-    = -\tau \left[\partial_{t_{0}} ln f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( ln f^{(0)}\right) -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  ln f^{(0)}\right) + v^i  f^{(0)}\Gamma_{ki}^i \right]
+    \frac{f^{(1)}}{f^{(0)}}=-\frac{\tau}{f^{(0)}}\left[\partial_{t_{0}} f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( f^{(0)}\right)+  f^{(0)}\frac{1}{J} \frac{\partial J}{\partial q^i}v^i - 2  f^{(0)}\Gamma_{ki}^iv^k  -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  f^{(0)}\right) \right] \\
+    = -\tau \left[\partial_{t_{0}} ln f^{(0)}+v^{i}\frac{\partial}{\partial q^{i}}\left( ln f^{(0)}\right) -v^{j} v^{k} \Gamma_{j k}^{i} \frac{\partial}{\partial v^{i}}\left(  ln f^{(0)}\right) -  \Gamma_{ki}^i v^k  \right]
   \end{gathered}
   \label{EQUATION::Kn的关系} ~
 \end{equation}
@@ -1243,6 +1238,10 @@ $$
   \end{gathered}
 \end{equation}
 
+记，
+$$
+\mathcal{R}_{iik} =g_{ij}\Gamma_{ik}^j 
+$$
 
 % 再次整理：
 % \begin{equation}
@@ -1336,17 +1335,19 @@ $$
 
 
 
-\begin{equation}
-  \begin{gathered}
-    \mathcal{R}_{iik}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^k   f^{(0)}  d \bar{v} =\Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2
-  \end{gathered}
-\end{equation}
+
 
 
 
 \begin{equation}
   \begin{gathered}
     \frac{3}{4e}\int g_{\beta\gamma} g_{ij} \iota^i\iota^j\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v} =\frac{70}{9}g^{\alpha i}\rho e^2
+  \end{gathered}
+\end{equation}
+
+\begin{equation}
+  \begin{gathered}
+    \mathcal{R}_{iik}g^{ik}\int g_{\beta\gamma} g_{ij}\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^j   f^{(0)}  d \bar{v} =\Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2 
   \end{gathered}
 \end{equation}
 
@@ -1366,14 +1367,14 @@ $$
 
 \begin{equation}
   \begin{gathered}
-    \mathcal{Q}^{\alpha (1)}
+    \mathcal{Q}^{\alpha (1)} = \frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{v}\\
     = -\tau  \frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha}  [\iota^i\mathcal{E}_i
     +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-    + {\color{blue} \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k}
+    + \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k
     ]{f^{(0)}} d \bar{v}  \\
     = -\tau  \frac{1}{2} \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v}  - \tau \frac{1}{2} \frac{3}{2e} \mathcal{R}_{iik}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^k   f^{(0)}  d \bar{v}  \\
     = -\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i} -  \tau \frac{1}{2} \frac{3}{2e}  \Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2\\
-    = -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{15}{2} \kappa T g^{\alpha i} \Gamma_{ki}^k
+    = -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i} 
   \end{gathered}
 \end{equation}
 
@@ -1383,7 +1384,7 @@ $$
 类似地，
 \begin{equation}
   \begin{gathered}
-    \int \iota^m \iota^n  \iota^{k} f^{(1)}  d \bar{v}  = -2\kappa \frac{\partial T}{\partial q^i} g^{ik} g^{mn}-15 \kappa T \Gamma_{ki}^k  g^{ik} g^{mn}
+    \int \iota^m \iota^n  \iota^{k} f^{(1)}  d \bar{v}  = -2\kappa \frac{\partial T}{\partial q^i} g^{ik} g^{mn}- \frac{25}{2}\mu \Gamma_{li}^{l}g^{ik} g^{mn}
   \end{gathered}
 \end{equation}
 
