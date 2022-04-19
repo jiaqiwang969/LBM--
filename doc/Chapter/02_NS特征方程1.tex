@@ -363,7 +363,11 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \end{equation}
 
 
-$N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相空间中以($\dot{q}$,$\dot{v}$)的速度行走，在没有碰撞的情况下守恒，所以它满足相空间里的连续性方程。
+
+
+接下来，我们开始推导弯曲空间的Navier-Sokes方程。我们考虑从基本的相空间里的连续性方程出发，即$N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度，它在相空间中以($\dot{q}$,$\dot{v}$)的速度行走，在没有碰撞的情况下满足守恒定理。
+
+
 
 
 % $$
@@ -376,6 +380,8 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
 \end{equation}
 
 %
+
+值得注意的是，该形式与通常给出的弯曲空间的Bolzmann方程不同。通过Liouville’s theorem，我们可以将其转化为\cite{mendoza2013flow}给出的形式($\dot{v}^i$在偏微分号外边)。但该处理会导致一个后果。在哈密尔顿演化下跟踪相空间的某个区域，相当于它的形状可以改变，但它的体积保持不变。这意味着，相空间上的概率分布就像不可压缩的流体一样。如果采用\cite{mendoza2013flow}的形式，后续连续性方程将会多出一项$\rho  \Gamma_{jk}^j u^k$。这与连续性方程在任何坐标系和空间中满足守恒定律的基本事实不符。由此可知，上述方程(\ref{EQUATION::Bolzmann中间过程2}）更为基本。同时，可以推测$\rho  \Gamma_{jk}^j u^k$的作用是为了抵消由于空间弯曲而导致体积变化的影响。
 %
 
 %
@@ -840,7 +846,7 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
        & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}=-g^{i j} \frac{\partial p}{\partial q^{j}} \\
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k            \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k                      \\
     \end{aligned}
   }
   \label{EQUATION::Eluer} ~
@@ -877,7 +883,7 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
   \begin{aligned}
      & \partial_t \rho + \nabla \cdot (\rho \boldsymbol{u})=0                                                      \\
      & \partial_{t}\left(\rho \boldsymbol{u} \right)+ \nabla \cdot (\rho \boldsymbol{u} \boldsymbol{u}) =-\nabla p \\
-     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})=-p \nabla \cdot \boldsymbol{u}      
+     & \partial_{t}\left(\rho e \right) + \nabla \cdot (\rho e \boldsymbol{u})=-p \nabla \cdot \boldsymbol{u}
   \end{aligned}
   \label{EQUATION::Eluer2} ~
 \end{equation}
@@ -900,7 +906,7 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
 其结论为：
 \begin{equation}
   \begin{gathered}
-    \sigma^{ij(1)}= 2 \mu \mathcal{S}^{\alpha\beta} 
+    \sigma^{ij(1)}= 2 \mu \mathcal{S}^{\alpha\beta}
   \end{gathered}
 \end{equation}
 
@@ -910,7 +916,7 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
 \begin{equation}
   \begin{gathered}
     \mathcal{Q}^{\alpha (1)}
-    = -\frac{10}{9}\rho e \tau \frac{\partial e}{\partial q^i} g^{\alpha i}=  -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i} 
+    = -\frac{10}{9}\rho e \tau \frac{\partial e}{\partial q^i} g^{\alpha i}=  -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i}
   \end{gathered}
 \end{equation}
 
@@ -950,16 +956,16 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
     \begin{aligned}
        & \partial_{t} \rho+\frac{1}{J} \frac{\partial}{\partial q^{i}}\left(J \rho u^{i}\right)=0
       \\
-       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}                                                                                                                                                                                        \\
-       & \quad\quad\quad\quad =-g^{i j} \frac{\partial p}{\partial q^{j}}+ \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}  \\ 
-       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k     + 2\mu \mathcal{S}^{ij} \frac{\partial u_j}{\partial q^i}  + \Gamma_{mn}^i g_{ik}(u^n 2\mu\mathcal{S}^{km} + u^m 2\mu\mathcal{S}^{nk} )                           \\
+       & \partial_{t}\left(\rho u^{i}\right)+\frac{1}{J} \frac{\partial}{\partial q^{j}}\left(J \rho u^{i} u^{j}\right)+\Gamma_{j k}^{i} \rho u^{j} u^{k}                                                                                                                                                                                 \\
+       & \quad\quad\quad\quad =-g^{i j} \frac{\partial p}{\partial q^{j}}+ \frac{1}{J} \frac{\partial}{\partial q^i}(2J\mu \mathcal{S}^{ij}) + 2\Gamma_{mn}^j \mu \mathcal{S}^{mn}                                                                                                                                                        \\
+       & \partial_{t}\left(\rho e\right) + \frac{1}{J}\frac{\partial J \rho u^i e}{\partial  q^{i}} = -  p\frac{1}{J}\frac{\partial J u^i}{\partial  q^{i}} -p\Gamma_{ik}^i u^k     + 2\mu \mathcal{S}^{ij} \frac{\partial u_j}{\partial q^i}  + \Gamma_{mn}^i g_{ik}(u^n 2\mu\mathcal{S}^{km} + u^m 2\mu\mathcal{S}^{nk} )               \\
        & \quad\quad\quad\quad  + \frac{1}{J} \frac{\partial}{\partial q^i} ( J \kappa \frac{\partial T}{\partial q^i} g^{ii}) +  2\kappa \frac{\partial T}{\partial q^i} \Gamma^i_{mn} g^{mn}     + \frac{1}{J} \frac{\partial}{\partial q^i} ( J\frac{25}{4}\mu \Gamma_{ki}^{k}g^{i i}  ) + \frac{25}{2}\mu \Gamma_{li}^{l}\Gamma^i_{mn} \\
     \end{aligned}
   }
 \end{equation}
 
 
-这与无坐标的形式Navier-Stokes方程相统一：
+无坐标的形式Navier-Stokes方程相统一：
 
 
 %参考https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)
@@ -972,6 +978,9 @@ $N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度。它在相
   \label{EQUATION::Eluer2} ~
 \end{equation}
 %
+
+
+可以看出，相比于传统的Navier-Stokes方程，能量方程还增加了RHS最后两项，是由于弯曲空间中粘性分布不均所带来的影响。
 
 
 \appendix
@@ -1240,7 +1249,7 @@ $$
 
 记，
 $$
-\mathcal{R}_{iik} =g_{ij}\Gamma_{ik}^j 
+  \mathcal{R}_{iik} =g_{ij}\Gamma_{ik}^j
 $$
 
 % 再次整理：
@@ -1264,8 +1273,8 @@ $$
     \begin{gathered}
       f^{(1)}=
       -\tau [ \iota^i\mathcal{E}_i
-      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-      + {\color{blue} \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k}
+        +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+        + \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k
       ]{f^{(0)}}
     \end{gathered}
   }
@@ -1295,7 +1304,7 @@ $$
 第三项：
 \begin{equation}
   \begin{gathered}
-    {\color{blue} \int \iota^\alpha \iota^\beta \iota^i\iota^i\iota^k \mathcal{R}_{iik}  f^{(0)}   d \bar{v} =0}
+    \int \iota^\alpha \iota^\beta \iota^i\iota^i\iota^k \mathcal{R}_{iik}  f^{(0)}   d \bar{v} =0
   \end{gathered}
 \end{equation}
 
@@ -1347,7 +1356,7 @@ $$
 
 \begin{equation}
   \begin{gathered}
-    \mathcal{R}_{iik}g^{ik}\int g_{\beta\gamma} g_{ij}\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^j   f^{(0)}  d \bar{v} =\Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2 
+    \mathcal{R}_{iik}g^{ik}\int g_{\beta\gamma} g_{ij}\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^j   f^{(0)}  d \bar{v} =\Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2
   \end{gathered}
 \end{equation}
 
@@ -1369,12 +1378,12 @@ $$
   \begin{gathered}
     \mathcal{Q}^{\alpha (1)} = \frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} f^{(1)}  d \bar{v}\\
     = -\tau  \frac{1}{2}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha}  [\iota^i\mathcal{E}_i
-    +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
-    + \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k
+      +\frac{3\iota_i \iota_j}{2e} \mathcal{S}^{ij}
+      + \frac{3}{2e} \mathcal{R}_{iik} \iota^i\iota^i\iota^k
     ]{f^{(0)}} d \bar{v}  \\
     = -\tau  \frac{1}{2} \int g_{\beta\gamma} (\frac{3 {\iota^i\iota^jg_{ij}}}{4e}-\frac{5}{2}) (\frac{1}{e}\frac{\partial e}{\partial q^i})\iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i   f^{(0)}  d \bar{v}  - \tau \frac{1}{2} \frac{3}{2e} \mathcal{R}_{iik}\int g_{\beta\gamma} \iota^{\beta} \iota^{\gamma}  \iota^{\alpha} \iota^i\iota^i\iota^k   f^{(0)}  d \bar{v}  \\
     = -\frac{10}{9}\rho e \tau g^{\alpha i}\frac{\partial e}{\partial q^i} -  \tau \frac{1}{2} \frac{3}{2e}  \Gamma_{ki}^k \frac{70}{9}g^{\alpha i}\rho e^2\\
-    = -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i} 
+    = -\kappa \frac{\partial T}{\partial q^i} g^{\alpha i} - \frac{25}{4}\mu \Gamma_{ki}^{k}g^{\alpha i}
   \end{gathered}
 \end{equation}
 
