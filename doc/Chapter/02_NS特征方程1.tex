@@ -167,17 +167,17 @@ BGK碰撞模型同时引入了弛豫时间$\tau$, 该参数与剪切黏度$\mu$�
 %
 %
 %
-\section{曲线坐标系下的Boltzmann运动方程}
+\section{曲线坐标系下弯曲空间的Boltzmann运动方程}
 %
 %
-近些年，有一些研究工作开始尝试将晶格气体自动机拓展为模拟任意表面上的流体，这对于数值算法的通用化是非常有意义的。在广义坐标系下，可以研究任意（弯曲或非弯曲）流形或坐标系上的几何以及其动力学关系。一个流形，你可以简单地把它想象成一个光滑的“表面”，一切粒子运动都发生在上面。其思想是利用微分几何工具，将曲线坐标系映射到笛卡尔坐标系下求解。参考 \cite{love2011boltzmann, mendoza2013flow,viggen2014lattice,ChenHudong2021LBM}，在其基础之上，我们整理并完善了从曲线坐标系下的Boltzmann方程到广义Naver-Stokes方程的推导，并将推导的过程拓展至可压Navier-Stokes方程。基于此，可以更深入理解Euler方程、Naver-Stokes方程背后的流声物理意义，同时也为后续柱坐标系下的旋流管道线性Euler方程的推导以及对任意坐标系下的无反射边界条件的推导起铺垫作用。
+近些年，有一些研究工作开始尝试将晶格气体自动机拓展为模拟任意表面上的流体，这对于数值算法的通用化是非常有意义的。在广义坐标系下，可以研究任意（弯曲或非弯曲）流形或坐标系上的几何以及其动力学关系。一个流形，你可以简单地把它想象成一个光滑的“表面”，一切粒子运动都发生在上面。其思想是利用微分几何工具，将曲线坐标系映射到笛卡尔坐标系下求解。参考 \cite{love2011boltzmann, mendoza2013flow,viggen2014lattice,ChenHudong2021LBM}，在其基础之上，我们整理并完善了从曲线坐标系下弯曲空间的Boltzmann方程到Naver-Stokes方程的推导，并将推导的过程拓展至可压Navier-Stokes方程。基于此，可以更深入理解Euler方程、Naver-Stokes方程背后的流声物理意义，同时也为后续柱坐标系下的旋流管道线性Euler方程的推导以及对任意坐标系下的无反射边界条件的推导起铺垫作用。
 %
 %
 
 
 
 
-参考\cite{kajishima2016computational}，我们引入一些微分几何的概念。逆变（contravariant，也称反变）和协变（covariant，也称共变）描述一个向量（或更广义来说，张量）的坐标，用于描述在向量空间的基底／坐标系变换之下，如何通过雅可比矩阵对其坐标进行相互转换。
+参考\cite{kajishima2016computational,nguyen2014tensor}，我们引入一些微分几何的概念。逆变（contravariant，也称反变）和协变（covariant，也称共变）描述一个向量（或更广义来说，张量）的坐标，用于描述在向量空间的基底／坐标系变换之下，如何通过雅可比矩阵对其坐标进行相互转换。
 
 对于位置, 我们可以分别在笛卡尔坐标系$\boldsymbol{x}(x,y,z)$和曲线坐标系$\boldsymbol{q}(\xi,\eta,\zeta)$下展开。对于笛卡尔坐标系来说，其逆变和协变相等，为方便与曲线坐标系做对比，同样写成逆变和协变两个基向量的展开形式：
 %
@@ -363,6 +363,16 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 \end{equation}
 
 
+那么我们就有以下规定的矩积分
+%
+%
+\begin{equation}
+  \begin{aligned}
+    \int N(\boldsymbol{q}, \bar{v}, t)   d \bar{v}     & =J(\boldsymbol{q}) \int f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t)                                \\
+    \int v^{i} N(\boldsymbol{q}, \bar{v}, t) d \bar{v} & =J(\boldsymbol{q}) \int v^{i} f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t) u^{i}(\boldsymbol{q}, t)
+  \end{aligned}
+  \label{EQUATION::A.11} ~
+\end{equation}
 
 
 接下来，我们开始推导弯曲空间的Navier-Sokes方程。我们考虑从基本的相空间里的连续性方程出发，即$N(q,v,t)$ 或 $f(q,v,t)$ 为相空间里的粒子数或粒子密度，它在相空间中以($\dot{q}$,$\dot{v}$)的速度行走，在没有碰撞的情况下满足守恒定理。
@@ -386,7 +396,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 %
 
-将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2}),并加上碰撞算子，便可得到曲线坐标系下的Bolzmann方程：
+将关系式(\ref{EQUATION::A.6})代入(\ref{EQUATION::Bolzmann中间过程2}),并加上碰撞算子，便可得到：
 
 \begin{equation}
   \boxed{
@@ -404,16 +414,6 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
 
 
 
-那么我们就有以下规定的矩积分
-%
-%
-\begin{equation}
-  \begin{aligned}
-    \int N(\boldsymbol{q}, \bar{v}, t)   d \bar{v}     & =J(\boldsymbol{q}) \int f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t)                                \\
-    \int v^{i} N(\boldsymbol{q}, \bar{v}, t) d \bar{v} & =J(\boldsymbol{q}) \int v^{i} f(\boldsymbol{q}, \bar{v}, t)d \bar{v} =J(\boldsymbol{q}) \rho(\boldsymbol{q}, t) u^{i}(\boldsymbol{q}, t)
-  \end{aligned}
-  \label{EQUATION::A.11} ~
-\end{equation}
 %
 %
 
@@ -920,7 +920,7 @@ $g $ 记为共变度量张量的行列式，根据上述关系有
   \end{gathered}
 \end{equation}
 
-记，热传导率$\kappa=\frac{5}{2}\rho R^2 T \tau$
+记，热传导率$\kappa=\frac{5}{2}\rho R^2 T \tau$。
 
 
 
